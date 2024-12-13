@@ -31,37 +31,27 @@ const redditCommunities: RedditCommunity[] = [
     name: 'TransBR',
     subreddit: 'transbr',
     description: 'Comunidade brasileira para pessoas trans compartilharem experiências e informações.',
-    members: '15.2k'
+    members: 'Em breve'
   },
   {
-    name: 'ArcoIris',
-    subreddit: 'arco_iris',
-    description: 'Comunidade LGBTQIA+ brasileira com discussões sobre transição e direitos.',
-    members: '25.4k'
+    name: 'TransTHBR',
+    subreddit: 'transthbr',
+    description: 'Comunidade brasileira sobre TH',
+    members: 'Em breve'
   },
   {
     name: 'TransDIY',
     subreddit: 'TransDIY',
     description: 'Discussão internacional sobre métodos de TH, segurança e recursos.',
-    members: '45.8k'
+    members: 'Em breve'
   }
 ];
 
 const recommendedSites: ResourceLink[] = [
   {
-    title: 'Portal Ambulatório Trans (UFRGS)',
-    url: 'https://www.ufrgs.br/atrans/',
-    description: 'Informações sobre atendimento e acolhimento à população trans no Brasil.'
-  },
-  {
-    title: 'Centro de Referência e Treinamento DST/AIDS-SP',
-    url: 'http://www.saude.sp.gov.br/centro-de-referencia-e-treinamento-dstaids-sp/',
-    description: 'Serviços de saúde especializados para população trans em São Paulo.'
-  },
-  {
-    title: 'Manual de Atenção à Saúde da População Trans - Ministério da Saúde',
-    url: 'https://bvsms.saude.gov.br/bvs/publicacoes/manual_atencao_populacao_trans.pdf',
-    description: 'Diretrizes oficiais para atendimento à população trans no SUS.'
+    title: 'Portal Ambulatório Trans SP',
+    url: 'https://saude.sp.gov.br/centro-de-referencia-e-treinamento-dstaids-sp/assistencia/ambulatorio-de-saude-integral-para-travestis-transexuais',
+    description: 'Informações sobre atendimento e acolhimento à população trans em São Paulo.'
   }
 ];
 
@@ -73,27 +63,9 @@ const organizations: Organization[] = [
     type: 'ONG'
   },
   {
-    name: 'Instituto Brasileiro de Transmasculinidades (IBRAT)',
-    url: 'https://ibrat.org',
-    description: 'Organização voltada para homens trans e pessoas transmasculinas.',
-    type: 'ONG'
-  },
-  {
-    name: 'Casa Florescer',
-    url: 'https://www.prefeitura.sp.gov.br/cidade/secretarias/direitos_humanos/lgbti/programas_e_projetos/index.php?p=150965',
-    description: 'Centro de acolhimento e apoio para mulheres trans em São Paulo.',
-    type: 'Apoio'
-  },
-  {
     name: 'Conselho Federal de Medicina (CFM)',
     url: 'https://portal.cfm.org.br',
     description: 'Regulamentação e diretrizes médicas para atendimento à população trans.',
-    type: 'Profissional'
-  },
-  {
-    name: 'Ambulatório Trans (HC-FMUSP)',
-    url: 'https://www.hc.fm.usp.br',
-    description: 'Serviço especializado em saúde trans no Hospital das Clínicas.',
     type: 'Profissional'
   }
 ];
