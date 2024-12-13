@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -10,6 +11,12 @@ import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import 'katex/dist/katex.min.css';
 import 'highlight.js/styles/github-dark.css';
+
+// Prevent SSR for ReactMarkdown to avoid hydration issues
+const DynamicMarkdown = dynamic(
+  () => Promise.resolve(ReactMarkdown),
+  { ssr: false }
+);
 
 interface TableOfContentsItem {
   id: string;
@@ -26,6 +33,11 @@ interface ArticleRendererProps {
 
 export default function ArticleRenderer({ content, references = {}, showToc = true }: ArticleRendererProps) {
   const [toc, setToc] = React.useState<TableOfContentsItem[]>([]);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Generate table of contents from headings
   React.useEffect(() => {
@@ -184,6 +196,10 @@ export default function ArticleRenderer({ content, references = {}, showToc = tr
     </li>
   );
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div className="flex gap-8">
       {showToc && toc.length > 0 && (
@@ -201,7 +217,7 @@ export default function ArticleRenderer({ content, references = {}, showToc = tr
       
       <article className="min-w-0 flex-1">
         <div className="prose prose-invert prose-purple max-w-none">
-          <ReactMarkdown
+          <DynamicMarkdown
             remarkPlugins={[remarkGfm, remarkMath]}
             rehypePlugins={[
               rehypeKatex,
@@ -212,7 +228,7 @@ export default function ArticleRenderer({ content, references = {}, showToc = tr
             components={components}
           >
             {content}
-          </ReactMarkdown>
+          </DynamicMarkdown>
         </div>
 
         {Object.keys(references).length > 0 && (

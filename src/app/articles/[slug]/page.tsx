@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import ArticleRenderer from '@/components/ArticleRenderer';
+import { formatDate } from '@/utils/dateFormatter';
 
 interface ArticlePageProps {
   params: {
@@ -10,9 +11,13 @@ interface ArticlePageProps {
   };
 }
 
-export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: ArticlePageProps,
+  parent: Promise<Metadata>
+): Promise<Metadata> {
+  const slug = await Promise.resolve(params.slug);
   const articleManager = ArticleManager.getInstance();
-  const article = await articleManager.getArticle(params.slug);
+  const article = await articleManager.getArticle(slug);
 
   if (!article) {
     return {
@@ -28,8 +33,9 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
+  const slug = await Promise.resolve(params.slug);
   const articleManager = ArticleManager.getInstance();
-  const article = await articleManager.getArticle(params.slug);
+  const article = await articleManager.getArticle(slug);
 
   if (!article) {
     notFound();
@@ -74,11 +80,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <div className="flex items-center gap-4 text-gray-400 mb-4">
             <span>{article.author}</span>
             <span>•</span>
-            <span>{new Date(article.date).toLocaleDateString()}</span>
+            <span>{formatDate(article.date)}</span>
             {article.lastModified && (
               <>
                 <span>•</span>
-                <span>Updated: {new Date(article.lastModified).toLocaleDateString()}</span>
+                <span>Updated: {formatDate(article.lastModified)}</span>
               </>
             )}
           </div>
@@ -95,7 +101,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
         </header>
 
-        <ArticleRenderer content={article.content} />
+        <ArticleRenderer content={article.content} references={article.references} />
 
         {/* Related Articles */}
         {relatedArticles.length > 0 && (
