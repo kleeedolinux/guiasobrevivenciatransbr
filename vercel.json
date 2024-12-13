@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/**/*.{js,ts,jsx,tsx}",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/src/$1"
+    }
+  ],
+  "devCommand": "next dev --port $PORT", // Custom development command
+}
