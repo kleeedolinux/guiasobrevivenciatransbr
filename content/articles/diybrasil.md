@@ -23,24 +23,23 @@ O Brasil carece de profissionais especializados em saúde trans. Boa parte de se
 Seja por algum desses fatores, ou por preferência pessoal, a terapia hormonal (TH) *do-it-yourself* (faça você mesma) é a escolha de boa parte do público transfeminino.
 
 ### Efeitos da transição hormonal
-
-| Efeito                               | Início esperado  | Efeito máximo |
-|--------------------------------------|------------------|---------------|
-| Redistribuição de gordura corporal   | 1-2 meses        | 2-5 anos      |
-| Diminuição da massa muscular         | 1-2 meses        | 1-1.5 anos    |
-| Diminuição da oleosidade da pele     | Reversível       |               |
-| Diminuição da acne                   | Reversível       |               |
-| Amaciamento da pele                  | 1-2 meses        | 1-2 anos      |
-| Diminuição da Libido                 | Dias a semanas   | Semanas a meses |
-| Diminuição das ereções involuntárias | Reversível       |               |
-| Disfunção erétil*                    | Reversível       |               |
-| Desenvolvimento dos seios            | 2-6 semanas      | 2-6 anos      |
-| Diminuição do volume testicular      | 1-3 meses        | 2-3 anos      |
-| Diminuição do volume de sêmen        | 2-6 semanas      | 1-3 anos      |
-| Diminuição da produção de esperma    | Variável         |               |
-| Crescimento mais lento de pelos**    | 1-3 meses        | 6 meses - 1 ano |
-| Mudanças de voz***                   | N/A              | Nada          |
-| Reversão da calvície****             | 1-3 meses        | 1-2 anos      |
+| Efeito                                       | Início esperado    | Efeito máximo       |
+|----------------------------------------------|--------------------|---------------------|
+| Redistribuição de gordura corporal           | 1-2 meses          | 2-5 anos            |
+| Diminuição da massa muscular                 | 1-2 meses          | 1-1.5 anos          |
+| Diminuição da oleosidade da pele             | 1-2 meses          | 1-1.5 anos          |
+| Diminuição da acne                           | 1-2 meses          | 1-1.5 anos          |
+| Amaciamento da pele                          | 1-2 meses          | 1-2 anos            |
+| Diminuição da Libido                         | dias a semanas     | semanas a meses     |
+| Diminuição das ereções involuntárias         | dias a semanas     | semanas a meses     |
+| Disfunção erétil*                            | dias a semanas     | semanas a meses     |
+| Desenvolvimento dos seios                    | 2-6 semanas        | 2-6 anos            |
+| Diminuição do volume testicular              | 1-3 meses          | 2-3 anos            |
+| Diminuição do volume de sêmen                | 2-6 semanas        | 1-3 anos            |
+| Diminuição da produção de esperma            | 2-6 semanas        | 1-3 anos            |
+| Crescimento mais lento de pelos**            | 1-3 meses          | 6 meses - 1 ano     |
+| Mudanças de voz***                           | nada               | nada                |
+| Reversão da calvície****                     | 1-3 meses          | 1-2 anos            |
 
 **A maioria das pessoas não experiencia disfunção erétil**
 
