@@ -45,7 +45,7 @@ export default async function ArticlesPage() {
     acc[year][month].push({
       slug: article.slug,
       title: article.title,
-      date: article.date,
+      date: article.date.toISOString(),
       excerpt: article.excerpt,
       tags: article.tags,
       series: article.series

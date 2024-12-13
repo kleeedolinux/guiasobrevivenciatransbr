@@ -45,7 +45,7 @@ const MemoizedTableOfContents = React.memo(function TableOfContents({
     <li key={item.id} className="my-1">
       <a
         href={`#${item.id}`}
-        className="text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 transition-colors block"
+        className="text-gray-300 hover:text-purple-400 transition-colors"
         style={{ marginLeft: `${(item.level - 1) * 1}rem` }}
       >
         {item.title}
@@ -59,7 +59,7 @@ const MemoizedTableOfContents = React.memo(function TableOfContents({
   return (
     <div className={className}>
       <div className="sticky top-4">
-        <h2 className="text-xl font-bold mb-4 text-purple-700 dark:text-purple-400">Índice</h2>
+        <h2 className="text-xl font-bold mb-4 text-purple-400">Table of Contents</h2>
         <nav className="toc">
           <ul className="space-y-2">
             {items.map(renderTocItem)}
@@ -71,10 +71,11 @@ const MemoizedTableOfContents = React.memo(function TableOfContents({
 });
 
 // Update ExternalImage component to handle its own wrapper
-const ExternalImage = React.memo(({ src, alt, className }: { 
+const ExternalImage = React.memo(({ src, alt, className, isInParagraph }: { 
   src: string; 
   alt?: string; 
   className?: string;
+  isInParagraph?: boolean;
 }) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState(false);
@@ -101,7 +102,7 @@ const ExternalImage = React.memo(({ src, alt, className }: {
     );
   }
 
-  return (
+  const imageContent = (
     <span className="relative inline-block" style={{ 
       aspectRatio: dimensions.width && dimensions.height ? 
         `${dimensions.width} / ${dimensions.height}` : '16/9',
@@ -121,6 +122,23 @@ const ExternalImage = React.memo(({ src, alt, className }: {
         )}
       </span>
     </span>
+  );
+
+  // If in paragraph context, return just the image
+  if (isInParagraph) {
+    return imageContent;
+  }
+
+  // If not in paragraph, wrap with figure
+  return (
+    <figure className="my-4">
+      {imageContent}
+      {alt && (
+        <figcaption className="text-center text-sm text-gray-400 mt-2">
+          {alt}
+        </figcaption>
+      )}
+    </figure>
   );
 });
 
@@ -225,13 +243,16 @@ const components = {
   img: React.memo(({ src, alt, node, ...props }: any) => {
     if (!src) return null;
 
+    // Check if the image is inside a paragraph
+    const isInParagraph = node?.parentNode?.tagName === 'paragraph';
+
     // Handle external images
     if (src.startsWith('http://') || src.startsWith('https://')) {
-      return <ExternalImage src={src} alt={alt} />;
+      return <ExternalImage src={src} alt={alt} isInParagraph={isInParagraph} />;
     }
 
-    // Handle local images
-    return (
+    // Handle local images - simplified to avoid nesting issues
+    const ImageContent = () => (
       <img
         src={src}
         alt={alt || ''}
@@ -239,30 +260,35 @@ const components = {
         {...props}
       />
     );
-  }),
-  p: React.memo(({ children, node, ...props }: any) => {
-    // Convert children to array and check if it contains only an image
-    const childrenArray = React.Children.toArray(children);
-    
-    if (childrenArray.length === 1) {
-      const child = childrenArray[0];
-      if (React.isValidElement(child) && 
-          (child.type === 'img' || child.type === ExternalImage || 
-           (typeof child.type === 'string' && child.props?.src))) {
-        return (
-          <figure className="my-4">
-            {child}
-            {child.props.alt && (
-              <figcaption className="text-center text-sm text-gray-400 mt-2">
-                {child.props.alt}
-              </figcaption>
-            )}
-          </figure>
-        );
-      }
+
+    // If in paragraph, just return the image
+    if (isInParagraph) {
+      return <ImageContent />;
     }
 
-    // Otherwise render as normal paragraph
+    // If not in paragraph, wrap with figure and caption
+    return (
+      <figure className="my-4">
+        <ImageContent />
+        {alt && (
+          <figcaption className="text-center text-sm text-gray-400 mt-2">
+            {alt}
+          </figcaption>
+        )}
+      </figure>
+    );
+  }),
+  p: React.memo(({ children, ...props }: any) => {
+    // Check if the paragraph contains only an image
+    const containsOnlyImage = React.Children.count(children) === 1 && 
+      React.isValidElement(children) && 
+      (children.type === 'img' || children.type === ExternalImage);
+
+    // If it contains only an image, return the image directly
+    if (containsOnlyImage) {
+      return children;
+    }
+
     return <p {...props}>{children}</p>;
   }),
 };
@@ -276,14 +302,13 @@ export default function ArticleRenderer({ content, references = {}, showToc = tr
 
   // Memoize table of contents generation
   const toc = useMemo(() => {
-    // Match both inline and block headings
-    const headings = content.match(/(?:^|\n)#{1,6}.+/g) || [];
+    const headings = content.match(/^#{1,6}.+$/gm) || [];
     const tocItems: TableOfContentsItem[] = [];
     const stack: TableOfContentsItem[][] = [tocItems];
 
     headings.forEach(heading => {
-      const level = heading.match(/#{1,6}/)?.[0].length || 1;
-      const title = heading.replace(/^[#\s]+/, '');
+      const level = heading.match(/^#+/)?.[0].length || 1;
+      const title = heading.replace(/^#+\s*/, '');
       const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
       const item: TableOfContentsItem = { id, title, level, items: [] };
@@ -319,16 +344,14 @@ export default function ArticleRenderer({ content, references = {}, showToc = tr
   return (
     <div className="flex gap-8">
       {showToc && toc.length > 0 && (
-        <aside className="hidden lg:block w-64 shrink-0">
-          <MemoizedTableOfContents 
-            items={toc} 
-            className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg" 
-          />
-        </aside>
+        <MemoizedTableOfContents 
+          items={toc} 
+          className="hidden lg:block w-64 shrink-0" 
+        />
       )}
       
       <article className="min-w-0 flex-1">
-        <div className="prose dark:prose-invert prose-purple max-w-none">
+        <div className="prose prose-invert prose-purple max-w-none">
           <DynamicMarkdown
             remarkPlugins={[remarkGfm, remarkMath]}
             rehypePlugins={[
@@ -344,11 +367,11 @@ export default function ArticleRenderer({ content, references = {}, showToc = tr
         </div>
 
         {Object.keys(references).length > 0 && (
-          <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-bold mb-4 text-purple-700 dark:text-purple-400">References</h2>
+          <div className="mt-12 pt-8 border-t border-gray-700">
+            <h2 className="text-2xl font-bold mb-4 text-purple-400">References</h2>
             <ol className="list-decimal list-inside space-y-2">
               {Object.entries(references).map(([key, value]) => (
-                <li key={key} id={`ref-${key}`} className="text-gray-700 dark:text-gray-300">
+                <li key={key} id={`ref-${key}`} className="text-gray-300">
                   {value}
                 </li>
               ))}
