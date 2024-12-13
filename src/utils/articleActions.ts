@@ -4,26 +4,19 @@ import { Article } from '@/types/article';
 import matter from 'gray-matter';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { cache } from 'react';
 
-// Private state
-let articles: Map<string, Article> | null = null;
-let series: Map<string, Article[]> | null = null;
-let tags: Map<string, Set<string>> | null = null;
-let keywords: Map<string, Set<string>> | null = null;
-
-async function ensureInitialized() {
-  if (articles !== null) return;
-
-  articles = new Map();
-  series = new Map();
-  tags = new Map();
-  keywords = new Map();
-
+// Cache the article loading
+export const loadArticles = cache(async () => {
   const articlesDir = path.join(process.cwd(), 'content/articles');
   const articleFiles = await fs.readdir(articlesDir);
+  const articles = new Map<string, Article>();
+  const series = new Map<string, Article[]>();
+  const tags = new Map<string, Set<string>>();
+  const keywords = new Map<string, Set<string>>();
 
-  for (const filename of articleFiles) {
-    if (!filename.endsWith('.md')) continue;
+  await Promise.all(articleFiles.map(async (filename) => {
+    if (!filename.endsWith('.md')) return;
 
     const filePath = path.join(articlesDir, filename);
     const fileContent = await fs.readFile(filePath, 'utf8');
@@ -47,7 +40,6 @@ async function ensureInitialized() {
       references: data.references || {}
     };
 
-    // Store article
     articles.set(slug, article);
 
     // Index by series
@@ -59,35 +51,37 @@ async function ensureInitialized() {
 
     // Index by tags
     article.tags.forEach(tag => {
-      const tagSlugs = tags!.get(tag) || new Set();
+      const tagSlugs = tags.get(tag) || new Set();
       tagSlugs.add(slug);
-      tags!.set(tag, tagSlugs);
+      tags.set(tag, tagSlugs);
     });
 
     // Index by keywords
     article.keywords.forEach(keyword => {
-      const keywordSlugs = keywords!.get(keyword) || new Set();
+      const keywordSlugs = keywords.get(keyword) || new Set();
       keywordSlugs.add(slug);
-      keywords!.set(keyword, keywordSlugs);
+      keywords.set(keyword, keywordSlugs);
     });
-  }
+  }));
 
   // Sort series articles by order
   series.forEach((articles, seriesName) => {
-    series!.set(seriesName, articles.sort((a, b) => 
+    series.set(seriesName, articles.sort((a, b) => 
       (a.series?.order || 0) - (b.series?.order || 0)
     ));
   });
-}
+
+  return { articles, series, tags, keywords };
+});
 
 export async function getArticle(slug: string): Promise<Article | undefined> {
-  await ensureInitialized();
-  return articles!.get(slug);
+  const { articles } = await loadArticles();
+  return articles.get(slug);
 }
 
 export async function getAllArticles(): Promise<Article[]> {
-  await ensureInitialized();
-  return Array.from(articles!.values())
+  const { articles } = await loadArticles();
+  return Array.from(articles.values())
     .sort((a, b) => b.date.getTime() - a.date.getTime());
 }
 
@@ -97,31 +91,31 @@ export async function getLatestArticles(limit: number = 10): Promise<Article[]> 
 }
 
 export async function getSeries(): Promise<string[]> {
-  await ensureInitialized();
-  return Array.from(series!.keys());
+  const { series } = await loadArticles();
+  return Array.from(series.keys());
 }
 
 export async function getSeriesArticles(seriesName: string): Promise<Article[]> {
-  await ensureInitialized();
-  return series!.get(seriesName) || [];
+  const { series } = await loadArticles();
+  return series.get(seriesName) || [];
 }
 
 export async function getArticlesByTag(tag: string): Promise<Article[]> {
-  await ensureInitialized();
-  const slugs = tags!.get(tag);
+  const { articles, tags } = await loadArticles();
+  const slugs = tags.get(tag);
   if (!slugs) return [];
   return Array.from(slugs)
-    .map(slug => articles!.get(slug)!)
+    .map(slug => articles.get(slug)!)
     .sort((a, b) => b.date.getTime() - a.date.getTime());
 }
 
 export async function getAllTags(): Promise<string[]> {
-  await ensureInitialized();
-  return Array.from(tags!.keys()).sort();
+  const { tags } = await loadArticles();
+  return Array.from(tags.keys()).sort();
 }
 
 export async function getRelatedArticles(article: Article, limit: number = 4): Promise<Article[]> {
-  await ensureInitialized();
+  const { articles, tags, keywords } = await loadArticles();
   const relatedSlugs = new Set<string>();
   const addRelated = (slug: string) => {
     if (slug !== article.slug && !relatedSlugs.has(slug)) {
@@ -137,7 +131,7 @@ export async function getRelatedArticles(article: Article, limit: number = 4): P
 
   // Add articles with matching tags
   article.tags.forEach(tag => {
-    const tagSlugs = tags!.get(tag);
+    const tagSlugs = tags.get(tag);
     if (tagSlugs) {
       tagSlugs.forEach(addRelated);
     }
@@ -145,60 +139,70 @@ export async function getRelatedArticles(article: Article, limit: number = 4): P
 
   // Add articles with matching keywords
   article.keywords.forEach(keyword => {
-    const keywordSlugs = keywords!.get(keyword);
+    const keywordSlugs = keywords.get(keyword);
     if (keywordSlugs) {
       keywordSlugs.forEach(addRelated);
     }
   });
 
   return Array.from(relatedSlugs)
-    .map(slug => articles!.get(slug)!)
+    .map(slug => articles.get(slug)!)
     .sort((a, b) => b.date.getTime() - a.date.getTime())
     .slice(0, limit);
 }
 
+// Optimized search function with pre-computed search text
+const getSearchableText = (article: Article): string => {
+  return [
+    article.title,
+    article.excerpt,
+    ...article.tags,
+    ...article.keywords,
+  ].join(' ').toLowerCase();
+};
+
 export async function searchArticles(query: string, tag?: string): Promise<Article[]> {
-  await ensureInitialized();
-  let allArticles = Array.from(articles!.values());
+  const { articles, tags } = await loadArticles();
+  let searchableArticles = Array.from(articles.values());
 
   // Filter by tag first if provided
   if (tag) {
-    const tagSlugs = tags!.get(tag);
+    const tagSlugs = tags.get(tag);
     if (tagSlugs) {
-      allArticles = allArticles.filter(article => tagSlugs.has(article.slug));
+      searchableArticles = searchableArticles.filter(article => tagSlugs.has(article.slug));
     } else {
       return [];
     }
   }
 
-  if (!query) return allArticles;
+  if (!query) return searchableArticles;
 
   const searchTerms = query.toLowerCase().split(/\s+/);
-  const results = new Map<string, number>(); // slug -> relevance score
+  const results = new Map<string, { article: Article; score: number }>();
 
-  allArticles.forEach(article => {
+  // Pre-compute searchable text for each article
+  const searchableTexts = new Map(
+    searchableArticles.map(article => [article.slug, getSearchableText(article)])
+  );
+
+  searchableArticles.forEach(article => {
     let score = 0;
-    const searchableText = [
-      article.title,
-      article.excerpt,
-      ...article.tags,
-      ...article.keywords,
-    ].join(' ').toLowerCase();
+    const searchableText = searchableTexts.get(article.slug)!;
 
     searchTerms.forEach(term => {
       if (article.title.toLowerCase().includes(term)) score += 3;
       if (article.excerpt.toLowerCase().includes(term)) score += 2;
       if (article.tags.some(tag => tag.toLowerCase().includes(term))) score += 2;
       if (article.keywords.some(keyword => keyword.toLowerCase().includes(term))) score += 2;
-      if (article.content.toLowerCase().includes(term)) score += 1;
+      if (searchableText.includes(term)) score += 1;
     });
 
     if (score > 0) {
-      results.set(article.slug, score);
+      results.set(article.slug, { article, score });
     }
   });
 
-  return Array.from(results.entries())
-    .sort((a, b) => b[1] - a[1])
-    .map(([slug]) => articles!.get(slug)!);
+  return Array.from(results.values())
+    .sort((a, b) => b.score - a.score)
+    .map(({ article }) => article);
 } 
