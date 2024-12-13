@@ -12,5 +12,5 @@
       "dest": "/src/$1"
     }
   ],
-  "devCommand": "next dev --port $PORT", // Custom development command
+  "devCommand": "next dev --port 3000", // Custom development command
 }
