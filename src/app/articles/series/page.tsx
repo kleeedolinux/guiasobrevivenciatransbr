@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Article Series - Transfeminine Science',
-  description: 'Browse article series on transfeminine hormone therapy',
+  title: 'Séries de Artigos - Guia de Sobrevivência Trans',
+  description: 'Navegue pelas séries de artigos sobre terapia hormonal transfeminina',
 };
 
 export default function SeriesPage() {
@@ -17,7 +17,7 @@ export default function SeriesPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8 text-purple-400">Article Series</h1>
+      <h1 className="text-4xl font-bold mb-8 text-purple-400">Séries de Artigos</h1>
 
       {seriesArticles.length > 0 ? (
         <div className="space-y-8">
@@ -56,7 +56,7 @@ export default function SeriesPage() {
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-400">No article series available yet.</p>
+        <p className="text-center text-gray-400">Nenhuma série de artigos disponível no momento.</p>
       )}
     </div>
   );

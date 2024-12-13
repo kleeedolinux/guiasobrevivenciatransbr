@@ -1,81 +1,83 @@
-import type { Metadata } from 'next'
-import '@fortawesome/fontawesome-free/css/all.min.css'
-import './globals.css'
+import './globals.css';
+import { Inter } from 'next/font/google';
+import Link from 'next/link';
+import { Metadata } from 'next';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Transfeminine Science',
-  description: 'A resource for original informational content on transfeminine hormone therapy',
-}
+  title: 'Guia de Sobrevivência Trans no Brasil',
+  description: 'Informações baseadas em evidências sobre terapia hormonal transfeminina',
+};
+
+const navigation = [
+  { name: 'Início', href: '/' },
+  { name: 'Artigos', href: '/articles' },
+  { name: 'Séries', href: '/articles/series' },
+  { name: 'Recentes', href: '/articles/latest' },
+  { name: 'Buscar', href: '/search' },
+  { name: 'Comunidade', href: '/community' },
+];
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-gray-900 text-white font-sans flex flex-col min-h-screen">
-        <Header />
-        {children}
-        <Footer />
+    <html lang="pt-BR">
+      <body className={`${inter.className} bg-gray-900 text-gray-100 min-h-screen`}>
+        <header className="bg-gray-800 shadow-lg">
+          <nav className="container mx-auto px-4">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex-shrink-0">
+                <Link href="/" className="text-2xl font-bold text-purple-400">
+                  Guia de Sobrevivência Trans
+                </Link>
+              </div>
+              <div className="hidden md:block">
+                <div className="ml-10 flex items-baseline space-x-4">
+                  {navigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className="text-gray-300 hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+            {/* Mobile menu */}
+            <div className="md:hidden">
+              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className="text-gray-300 hover:text-purple-400 block px-3 py-2 rounded-md text-base font-medium"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </nav>
+        </header>
+        <main>{children}</main>
+        <footer className="bg-gray-800 mt-12">
+          <div className="container mx-auto px-4 py-8">
+            <div className="text-center text-gray-400">
+              <p>© {new Date().getFullYear()} Guia de Sobrevivência Trans no Brasil. Todos os direitos reservados.</p>
+              <p className="mt-2">
+                Este site fornece informações sobre terapia hormonal transfeminina apenas para fins educacionais.
+                Consulte profissionais de saúde para aconselhamento médico.
+              </p>
+            </div>
+          </div>
+        </footer>
       </body>
     </html>
-  )
-}
-
-function Header() {
-  return (
-    <header className="flex flex-col items-center p-4 border-b border-gray-700">
-      <div className="flex items-center mb-4">
-        <img 
-          src="https://storage.googleapis.com/a1aa/image/GAV34jtJhQ70LZTi3OwT1rxyFtrD5GspsUSlD7pzzxm5KpeJA.jpg" 
-          alt="Logo of a laboratory flask with a purple liquid" 
-          className="h-10 w-10" 
-          width={40} 
-          height={40}
-        />
-        <span className="ml-2 text-2xl font-bold text-purple-400">Transfeminine Science</span>
-      </div>
-      <nav className="flex space-x-4">
-        <a href="/articles" className="text-purple-400 hover:underline">Articles</a>
-        <a href="/articles/latest" className="text-purple-400 hover:underline">Latest</a>
-        <a href="/articles/series" className="text-purple-400 hover:underline">Series</a>
-        <a href="/misc" className="text-purple-400 hover:underline">Misc</a>
-        <a href="/about" className="text-purple-400 hover:underline">About</a>
-      </nav>
-      <div className="flex space-x-4 mt-4">
-        <a href="/search" className="text-purple-400 hover:text-purple-300">
-          <i className="fas fa-search"></i>
-        </a>
-        <button className="text-purple-400 hover:text-purple-300">
-          <i className="fas fa-moon"></i>
-        </button>
-        <button className="text-purple-400 hover:text-purple-300">
-          <i className="fas fa-language"></i>
-        </button>
-      </div>
-    </header>
-  )
-}
-
-function Footer() {
-  return (
-    <footer className="p-4 border-t border-gray-700 text-center">
-      <div className="flex justify-center space-x-4 mb-4">
-        <a href="https://github.com" className="text-purple-400 hover:underline">
-          <i className="fab fa-github"></i> GitHub
-        </a>
-        <a href="/contact" className="text-purple-400 hover:underline">
-          <i className="fas fa-envelope"></i> Contact Us
-        </a>
-        <a href="/about" className="text-purple-400 hover:underline">
-          <i className="fas fa-info-circle"></i> About
-        </a>
-        <a href="/rss.xml" className="text-purple-400 hover:underline">
-          <i className="fas fa-rss"></i> RSS
-        </a>
-      </div>
-      <p>© 2024 Transfeminine Science</p>
-    </footer>
-  )
+  );
 } 

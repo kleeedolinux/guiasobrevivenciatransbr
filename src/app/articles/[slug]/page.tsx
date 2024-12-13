@@ -21,12 +21,12 @@ export async function generateMetadata(
 
   if (!article) {
     return {
-      title: 'Article Not Found',
+      title: 'Artigo Não Encontrado',
     };
   }
 
   return {
-    title: `${article.title} - Transfeminine Science`,
+    title: `${article.title} - Guia de Sobrevivência Trans`,
     description: article.excerpt,
     keywords: article.keywords.join(', '),
   };
@@ -53,7 +53,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         {article.series && (
           <div className="mb-8 p-4 bg-gray-800 rounded-lg">
             <h2 className="text-xl font-bold mb-4 text-purple-400">
-              Part {article.series.order + 1} of {article.series.name}
+              Parte {article.series.order + 1} de {article.series.name}
             </h2>
             <div className="space-y-2">
               {seriesArticles.map((seriesArticle, index) => (
@@ -84,7 +84,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             {article.lastModified && (
               <>
                 <span>•</span>
-                <span>Updated: {formatDate(article.lastModified)}</span>
+                <span>Atualizado: {formatDate(article.lastModified)}</span>
               </>
             )}
           </div>
@@ -106,7 +106,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         {/* Related Articles */}
         {relatedArticles.length > 0 && (
           <section className="mt-12 pt-8 border-t border-gray-700">
-            <h2 className="text-2xl font-bold mb-6 text-purple-400">Related Articles</h2>
+            <h2 className="text-2xl font-bold mb-6 text-purple-400">Artigos Relacionados</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {relatedArticles.map((related) => (
                 <Link
@@ -123,7 +123,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         )}
 
         <footer className="mt-8 pt-8 border-t border-gray-700">
-          <h2 className="text-2xl font-bold mb-4 text-purple-400">Keywords</h2>
+          <h2 className="text-2xl font-bold mb-4 text-purple-400">Palavras-chave</h2>
           <div className="flex flex-wrap gap-2">
             {article.keywords.map((keyword) => (
               <Link

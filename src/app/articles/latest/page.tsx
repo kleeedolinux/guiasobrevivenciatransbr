@@ -1,46 +1,46 @@
 import { ArticleManager } from '@/utils/articleManager';
 import Link from 'next/link';
 import { Metadata } from 'next';
+import { formatDate } from '@/utils/dateFormatter';
 
 export const metadata: Metadata = {
-  title: 'Latest Articles - Transfeminine Science',
-  description: 'Most recent articles on transfeminine hormone therapy',
+  title: 'Artigos Recentes - Guia de Sobrevivência Trans',
+  description: 'Últimos artigos publicados sobre terapia hormonal transfeminina',
 };
 
-export default async function LatestArticlesPage() {
+export default function LatestArticlesPage() {
   const articleManager = ArticleManager.getInstance();
-  const articles = articleManager.getAllArticles()
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const articles = articleManager.getLatestArticles();
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8 text-purple-400">Latest Articles</h1>
+      <h1 className="text-4xl font-bold mb-8 text-purple-400">Artigos Recentes</h1>
 
       <div className="space-y-8">
-        {articles.map((article) => (
-          <article
-            key={article.id}
-            className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow p-6"
-          >
-            <h2 className="text-2xl font-bold mb-2 text-purple-400">
-              <Link href={`/articles/${article.slug}`}>
+        {articles.map(article => (
+          <article key={article.slug} className="bg-gray-800 rounded-lg p-6">
+            <h2 className="text-2xl font-bold mb-2">
+              <Link
+                href={`/articles/${article.slug}`}
+                className="text-purple-400 hover:text-purple-300"
+              >
                 {article.title}
               </Link>
             </h2>
             <div className="flex items-center gap-4 text-gray-400 mb-4">
               <span>{article.author}</span>
               <span>•</span>
-              <span>{new Date(article.date).toLocaleDateString()}</span>
+              <span>{formatDate(article.date)}</span>
               {article.lastModified && (
                 <>
                   <span>•</span>
-                  <span>Updated: {new Date(article.lastModified).toLocaleDateString()}</span>
+                  <span>Atualizado: {formatDate(article.lastModified)}</span>
                 </>
               )}
             </div>
             <p className="text-gray-300 mb-4">{article.excerpt}</p>
             <div className="flex flex-wrap gap-2">
-              {article.tags.map((tag) => (
+              {article.tags.map(tag => (
                 <Link
                   key={tag}
                   href={`/articles/tag/${tag}`}
@@ -50,11 +50,6 @@ export default async function LatestArticlesPage() {
                 </Link>
               ))}
             </div>
-            {article.series && (
-              <div className="mt-4 text-sm text-purple-300">
-                Part of series: {article.series.name}
-              </div>
-            )}
           </article>
         ))}
       </div>
