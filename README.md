@@ -14,7 +14,8 @@ Você pode consultar o formato de um artigo no diretório `/content/articles/` p
 
 - **Sistema de Reporte de Informações Erradas:** Implementar uma funcionalidade para que os usuários possam reportar informações incorretas ou desatualizadas nos artigos.
 - **Sistema de Pesquisa:** Concluir o desenvolvimento de um sistema de pesquisa para facilitar a localização de artigos relevantes.
-
+- **Sistema visual para criar artigos:** Criar um sistema mais fácil para criar artigos.
+- **Arrumar alguns erros nos artigos e site:** Erros de linguagem humana 
 ## Como contribuir
 
 1. Navegue pelos artigos disponíveis para explorar o conteúdo.
