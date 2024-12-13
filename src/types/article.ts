@@ -1,20 +1,18 @@
 export interface Article {
-  id: string;
-  title: string;
   slug: string;
-  content: string;
-  excerpt: string;
+  title: string;
+  date: Date;
   author: string;
-  date: string;
+  excerpt: string;
+  content: string;
   tags: string[];
   keywords: string[];
-  category: string;
-  lastModified?: string;
   series?: {
     name: string;
     order: number;
   };
-  relatedArticles?: string[]; // Array of related article slugs
+  lastModified?: Date;
+  references: { [key: string]: string };
 }
 
 export interface ArticleIndex {

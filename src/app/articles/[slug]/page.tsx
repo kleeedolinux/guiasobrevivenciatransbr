@@ -1,4 +1,4 @@
-import { ArticleManager } from '@/utils/articleManager';
+import { getArticle, getRelatedArticles, getSeriesArticles } from '@/utils/articleActions';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
@@ -15,9 +15,7 @@ export async function generateMetadata(
   { params }: ArticlePageProps,
   parent: Promise<Metadata>
 ): Promise<Metadata> {
-  const slug = await Promise.resolve(params.slug);
-  const articleManager = ArticleManager.getInstance();
-  const article = await articleManager.getArticle(slug);
+  const article = await getArticle(params.slug);
 
   if (!article) {
     return {
@@ -33,17 +31,15 @@ export async function generateMetadata(
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const slug = await Promise.resolve(params.slug);
-  const articleManager = ArticleManager.getInstance();
-  const article = await articleManager.getArticle(slug);
+  const article = await getArticle(params.slug);
 
   if (!article) {
     notFound();
   }
 
-  const relatedArticles = await articleManager.getRelatedArticles(article);
+  const relatedArticles = await getRelatedArticles(article);
   const seriesArticles = article.series 
-    ? await articleManager.getSeriesArticles(article.series.name)
+    ? await getSeriesArticles(article.series.name)
     : [];
 
   return (

@@ -1,4 +1,4 @@
-import { ArticleManager } from '@/utils/articleManager';
+import { getLatestArticles } from '@/utils/articleActions';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { formatDate } from '@/utils/dateFormatter';
@@ -8,9 +8,8 @@ export const metadata: Metadata = {
   description: 'Últimos artigos publicados sobre terapia hormonal transfeminina',
 };
 
-export default function LatestArticlesPage() {
-  const articleManager = ArticleManager.getInstance();
-  const articles = articleManager.getLatestArticles();
+export default async function LatestArticlesPage() {
+  const articles = await getLatestArticles();
 
   return (
     <div className="container mx-auto px-4 py-8">

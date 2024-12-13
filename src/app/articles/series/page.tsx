@@ -1,4 +1,4 @@
-import { ArticleManager } from '@/utils/articleManager';
+import { getSeries, getSeriesArticles } from '@/utils/articleActions';
 import Link from 'next/link';
 import { Metadata } from 'next';
 
@@ -7,13 +7,14 @@ export const metadata: Metadata = {
   description: 'Navegue pelas séries de artigos sobre terapia hormonal transfeminina',
 };
 
-export default function SeriesPage() {
-  const articleManager = ArticleManager.getInstance();
-  const seriesNames = articleManager.getSeries();
-  const seriesArticles = seriesNames.map(name => ({
-    name,
-    articles: articleManager.getSeriesArticles(name)
-  }));
+export default async function SeriesPage() {
+  const seriesNames = await getSeries();
+  const seriesArticles = await Promise.all(
+    seriesNames.map(async name => ({
+      name,
+      articles: await getSeriesArticles(name)
+    }))
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">

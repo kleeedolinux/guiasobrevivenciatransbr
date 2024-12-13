@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://your-domain.com/</id>
     <title>Transfeminine Science</title>
-    <updated>2024-12-13T21:03:19.221Z</updated>
+    <updated>2024-12-13T21:04:34.951Z</updated>
     <generator>Transfeminine Science Feed Generator</generator>
     <link rel="alternate" href="https://your-domain.com/"/>
     <link rel="self" href="https://your-domain.com/atom.xml"/>
@@ -11,7 +11,7 @@
     <rights>All rights reserved 2024</rights>
     <entry>
         <title type="html"><![CDATA[Introduction to Hormone Therapy]]></title>
-        <id>1734123799220</id>
+        <id>1734123874949</id>
         <link href="https://your-domain.com/articles/introduction-to-hormone-therapy"/>
         <updated>2024-01-13T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[A comprehensive introduction to hormone therapy for transfeminine individuals, covering the basics of hormones, their effects, and what to expect.]]></summary>
