@@ -69,6 +69,7 @@ const MemoizedTableOfContents = React.memo(function TableOfContents({
     </div>
   );
 });
+MemoizedTableOfContents.displayName = 'MemoizedTableOfContents';
 
 // Update ExternalImage component to handle its own wrapper
 const ExternalImage = React.memo(({ src, alt, className, isInParagraph }: { 
@@ -141,54 +142,53 @@ const ExternalImage = React.memo(({ src, alt, className, isInParagraph }: {
     </figure>
   );
 });
-
 ExternalImage.displayName = 'ExternalImage';
 
-// Update components
-const components = {
-  table: React.memo(({ children, ...props }: any) => (
+// Define specific types for props
+const components: { [key: string]: React.FC<any> } = {
+  table: React.memo(({ children, ...props }: React.HTMLProps<HTMLTableElement>) => (
     <div className="overflow-x-auto my-8">
       <table className="min-w-full divide-y divide-gray-700" {...props}>
         {children}
       </table>
     </div>
   )),
-  thead: React.memo(({ children, ...props }: any) => (
+  thead: React.memo(({ children, ...props }: React.HTMLProps<HTMLTableSectionElement>) => (
     <thead className="bg-gray-800" {...props}>
       {children}
     </thead>
   )),
-  th: React.memo(({ children, ...props }: any) => (
+  th: React.memo(({ children, ...props }: React.HTMLProps<HTMLTableCellElement>) => (
     <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" {...props}>
       {children}
     </th>
   )),
-  td: React.memo(({ children, ...props }: any) => (
+  td: React.memo(({ children, ...props }: React.HTMLProps<HTMLTableCellElement>) => (
     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300" {...props}>
       {children}
     </td>
   )),
-  tr: React.memo(({ children, ...props }: any) => (
+  tr: React.memo(({ children, ...props }: React.HTMLProps<HTMLTableRowElement>) => (
     <tr className="bg-gray-900 even:bg-gray-800" {...props}>
       {children}
     </tr>
   )),
-  h1: React.memo(({ children, ...props }: any) => (
+  h1: React.memo(({ children, ...props }: { children: React.ReactNode }) => (
     <h1 className="text-4xl font-bold mt-8 mb-4 text-purple-400" {...props}>
       {children}
     </h1>
   )),
-  h2: React.memo(({ children, ...props }: any) => (
+  h2: React.memo(({ children, ...props }: { children: React.ReactNode }) => (
     <h2 className="text-3xl font-bold mt-6 mb-4 text-purple-400" {...props}>
       {children}
     </h2>
   )),
-  h3: React.memo(({ children, ...props }: any) => (
+  h3: React.memo(({ children, ...props }: { children: React.ReactNode }) => (
     <h3 className="text-2xl font-bold mt-4 mb-3 text-purple-400" {...props}>
       {children}
     </h3>
   )),
-  a: React.memo(({ children, href, ...props }: any) => {
+  a: React.memo(({ children, href, ...props }: { children: React.ReactNode; href: string }) => {
     if (href?.startsWith('#ref-')) {
       const refKey = href.replace('#ref-', '');
       return (
@@ -213,7 +213,7 @@ const components = {
       </a>
     );
   }),
-  blockquote: React.memo(({ children, ...props }: any) => (
+  blockquote: React.memo(({ children, ...props }: { children: React.ReactNode }) => (
     <blockquote
       className="border-l-4 border-purple-400 pl-4 my-4 italic text-gray-300"
       {...props}
@@ -221,7 +221,7 @@ const components = {
       {children}
     </blockquote>
   )),
-  code: React.memo(({ inline, className, children, ...props }: any) => {
+  code: React.memo(({ inline, className, children, ...props }: { inline?: boolean; className?: string; children: React.ReactNode }) => {
     const match = /language-(\w+)/.exec(className || '');
     return !inline && match ? (
       <div className="relative">
@@ -240,7 +240,7 @@ const components = {
       </code>
     );
   }),
-  img: React.memo(({ src, alt, node, ...props }: any) => {
+  img: React.memo(({ src, alt, node, ...props }: { src: string; alt?: string; node?: any }) => {
     if (!src) return null;
 
     // Check if the image is inside a paragraph
@@ -278,7 +278,7 @@ const components = {
       </figure>
     );
   }),
-  p: React.memo(({ children, ...props }: any) => {
+  p: React.memo(({ children, ...props }: { children: React.ReactNode }) => {
     // Check if the paragraph contains only an image
     const containsOnlyImage = React.Children.count(children) === 1 && 
       React.isValidElement(children) && 
@@ -292,6 +292,16 @@ const components = {
     return <p {...props}>{children}</p>;
   }),
 };
+
+// Set display names for components
+components.h1.displayName = 'CustomH1';
+components.h2.displayName = 'CustomH2';
+components.h3.displayName = 'CustomH3';
+components.a.displayName = 'CustomLink';
+components.blockquote.displayName = 'CustomBlockquote';
+components.code.displayName = 'CustomCode';
+components.img.displayName = 'CustomImage';
+components.p.displayName = 'CustomParagraph';
 
 export default function ArticleRenderer({ content, references = {}, showToc = true }: ArticleRendererProps) {
   const [mounted, setMounted] = React.useState(false);
