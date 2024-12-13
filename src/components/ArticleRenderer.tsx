@@ -253,7 +253,7 @@ const components = {
 
     // Handle local images - simplified to avoid nesting issues
     const ImageContent = () => (
-      <img
+      <Image
         src={src}
         alt={alt || ''}
         className="rounded-lg max-w-full h-auto"

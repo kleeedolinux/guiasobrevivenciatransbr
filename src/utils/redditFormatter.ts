@@ -1,8 +1,5 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
-
 export function formatRedditText(text: string): string {
   const redditPattern = /r\/([a-zA-Z0-9_]+)/g;
   return text.replace(redditPattern, (match, subreddit) => {

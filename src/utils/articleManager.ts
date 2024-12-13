@@ -189,12 +189,6 @@ export class ArticleManager {
 
     articles.forEach(article => {
       let score = 0;
-      const searchableText = [
-        article.title,
-        article.excerpt,
-        ...article.tags,
-        ...article.keywords,
-      ].join(' ').toLowerCase();
 
       searchTerms.forEach(term => {
         if (article.title.toLowerCase().includes(term)) score += 3;

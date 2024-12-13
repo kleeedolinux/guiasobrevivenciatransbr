@@ -1,7 +1,6 @@
 import { getAllArticles, getAllTags } from '@/utils/articleActions';
 import Link from 'next/link';
 import { Metadata } from 'next';
-import { formatDate } from '@/utils/dateFormatter';
 import RedditText from '@/components/RedditText';
 
 export const metadata: Metadata = {
