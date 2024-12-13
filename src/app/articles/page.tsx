@@ -2,6 +2,7 @@ import { getAllArticles, getAllTags } from '@/utils/articleActions';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { formatDate } from '@/utils/dateFormatter';
+import RedditText from '@/components/RedditText';
 
 export const metadata: Metadata = {
   title: 'Artigos - Guia de Sobrevivência Trans',
@@ -127,7 +128,9 @@ export default async function ArticlesPage() {
                               Parte da série: {article.series.name}
                             </div>
                           )}
-                          <p className="text-gray-300 mb-4">{article.excerpt}</p>
+                          <div className="text-gray-300 mb-4">
+                            <RedditText text={article.excerpt} />
+                          </div>
                           <div className="flex flex-wrap gap-2">
                             {article.tags.map(tag => (
                               <Link

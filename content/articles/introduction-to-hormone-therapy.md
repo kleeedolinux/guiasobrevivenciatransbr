@@ -26,7 +26,7 @@ Hormone therapy is a fundamental aspect of medical transition for many transfemi
 ## What is Hormone Therapy?
 
 Hormone therapy, also known as HRT (Hormone Replacement Therapy) or GAHT (Gender-Affirming Hormone Therapy), is a medical treatment that helps align a person's secondary sexual characteristics with their gender identity[^2]. For transfeminine individuals, this typically involves:
-
+r/transbr
 1. Taking estrogen to promote feminization
 2. Taking antiandrogens to block testosterone
 3. Sometimes taking progestogens for additional effects

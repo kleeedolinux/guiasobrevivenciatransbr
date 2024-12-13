@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import ArticleRenderer from '@/components/ArticleRenderer';
 import { formatDate } from '@/utils/dateFormatter';
+import RedditText from '@/components/RedditText';
 
 interface ArticlePageProps {
   params: {
@@ -95,6 +96,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </Link>
             ))}
           </div>
+          <div className="mt-4 text-gray-300">
+            <RedditText text={article.excerpt} />
+          </div>
         </header>
 
         <ArticleRenderer content={article.content} references={article.references} />
@@ -111,7 +115,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   className="block p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
                 >
                   <h3 className="text-lg font-bold mb-2 text-purple-400">{related.title}</h3>
-                  <p className="text-gray-300 text-sm">{related.excerpt}</p>
+                  <p className="text-gray-300 text-sm">
+                    <RedditText text={related.excerpt} />
+                  </p>
                 </Link>
               ))}
             </div>

@@ -11,6 +11,7 @@ import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import 'katex/dist/katex.min.css';
 import 'highlight.js/styles/github-dark.css';
+import { formatRedditText } from '@/utils/redditFormatter';
 
 // Prevent SSR for ReactMarkdown to avoid hydration issues
 const DynamicMarkdown = dynamic(
@@ -72,6 +73,9 @@ export default function ArticleRenderer({ content, references = {}, showToc = tr
 
     setToc(tocItems);
   }, [content]);
+
+  // Process content for Reddit links before rendering
+  const processedContent = formatRedditText(content);
 
   // Custom components for markdown rendering
   const components = {
@@ -227,7 +231,7 @@ export default function ArticleRenderer({ content, references = {}, showToc = tr
             ]}
             components={components}
           >
-            {content}
+            {processedContent}
           </DynamicMarkdown>
         </div>
 

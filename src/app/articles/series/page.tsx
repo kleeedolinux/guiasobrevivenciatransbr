@@ -1,6 +1,7 @@
 import { getSeries, getSeriesArticles } from '@/utils/articleActions';
 import Link from 'next/link';
 import { Metadata } from 'next';
+import RedditText from '@/components/RedditText';
 
 export const metadata: Metadata = {
   title: 'Séries de Artigos - Guia de Sobrevivência Trans',
@@ -38,7 +39,9 @@ export default async function SeriesPage() {
                       >
                         {article.title}
                       </Link>
-                      <p className="text-gray-300 mt-2">{article.excerpt}</p>
+                      <div className="text-gray-300 mt-2">
+                        <RedditText text={article.excerpt} />
+                      </div>
                       <div className="flex flex-wrap gap-2 mt-2">
                         {article.tags.map(tag => (
                           <span
