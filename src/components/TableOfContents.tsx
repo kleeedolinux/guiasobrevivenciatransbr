@@ -46,11 +46,16 @@ export default function TableOfContents({ articleContent }: TableOfContentsProps
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setActiveId(entry.target.id);
+            // Update URL hash without scrolling
+            const url = new URL(window.location.href);
+            url.hash = entry.target.id;
+            window.history.replaceState({}, '', url.toString());
           }
         });
       },
       {
         rootMargin: '-20% 0px -80% 0px',
+        threshold: 0.5,
       }
     );
 
@@ -62,6 +67,18 @@ export default function TableOfContents({ articleContent }: TableOfContentsProps
           observer.observe(element);
         }
       });
+
+      // If there's a hash in the URL, scroll to it after a short delay
+      if (window.location.hash) {
+        const id = window.location.hash.slice(1);
+        const element = document.getElementById(id);
+        if (element) {
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setActiveId(id);
+          }, 100);
+        }
+      }
     }, 100);
 
     return () => observer.disconnect();
@@ -70,7 +87,20 @@ export default function TableOfContents({ articleContent }: TableOfContentsProps
   const handleClick = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      // Update URL hash
+      window.history.pushState({}, '', `#${id}`);
+      // Scroll to element with offset for fixed header
+      const header = document.querySelector('header');
+      const headerHeight = header ? header.offsetHeight : 0;
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - headerHeight - 24; // 24px extra padding
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+      
+      setActiveId(id);
     }
   };
 
