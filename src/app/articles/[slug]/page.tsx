@@ -58,20 +58,20 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           {/* Main Content */}
           <article className="lg:flex-1">
             <header className="mb-8">
-              <h1 className="text-4xl font-bold mb-4 text-purple-700 dark:text-purple-400">
+              <h1 className="text-4xl font-bold mb-4 text-purple-700 dark:text-purple-400 break-words hyphens-auto">
                 {article.title}
               </h1>
               <div className="flex flex-wrap gap-4 items-center text-sm text-gray-600 dark:text-gray-400">
-                <time dateTime={article.date.toISOString()}>
+                <time dateTime={article.date.toISOString()} className="break-words">
                   {formatDate(article.date)}
                 </time>
                 {article.lastModified && (
-                  <span>
+                  <span className="break-words">
                     Atualizado em {formatDate(article.lastModified)}
                   </span>
                 )}
                 {article.author && (
-                  <span>
+                  <span className="break-words">
                     por <span className="font-medium">{article.author}</span>
                   </span>
                 )}
@@ -81,7 +81,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   {article.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm"
+                      className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm break-words"
                     >
                       {tag}
                     </span>
@@ -90,7 +90,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               )}
             </header>
 
-            <div className="prose prose-purple dark:prose-invert max-w-none">
+            <div className="prose prose-purple dark:prose-invert max-w-none prose-img:max-w-full prose-pre:break-words prose-pre:whitespace-pre-wrap">
               <ArticleRenderer content={article.content} />
             </div>
 

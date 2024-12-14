@@ -91,7 +91,7 @@ export default function TableOfContents({ articleContent }: TableOfContentsProps
           >
             <button
               onClick={() => handleClick(heading.id)}
-              className={`text-left w-full px-2 py-1 text-sm rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 ${
+              className={`text-left w-full px-2 py-1 text-sm rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 break-words ${
                 activeId === heading.id
                   ? 'text-purple-600 dark:text-purple-400 font-medium'
                   : 'text-gray-600 dark:text-gray-400'

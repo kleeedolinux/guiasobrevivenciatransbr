@@ -147,8 +147,8 @@ ExternalImage.displayName = 'ExternalImage';
 // Define specific types for props
 const components: { [key: string]: React.FC<any> } = {
   table: React.memo(({ children, ...props }: React.HTMLProps<HTMLTableElement>) => (
-    <div className="overflow-x-auto my-8">
-      <table className="min-w-full divide-y divide-gray-700" {...props}>
+    <div className="overflow-x-auto my-8 max-w-full">
+      <table className="min-w-full divide-y divide-gray-700 table-auto" {...props}>
         {children}
       </table>
     </div>
@@ -195,7 +195,7 @@ const components: { [key: string]: React.FC<any> } = {
         <sup>
           <a
             href={href}
-            className="text-purple-400 hover:text-purple-300 ml-1"
+            className="text-purple-400 hover:text-purple-300 ml-1 break-words"
             {...props}
           >
             [{refKey}]
@@ -206,7 +206,7 @@ const components: { [key: string]: React.FC<any> } = {
     return (
       <a
         href={href}
-        className="text-purple-400 hover:text-purple-300 underline"
+        className="text-purple-400 hover:text-purple-300 underline break-words"
         {...props}
       >
         {children}
@@ -221,21 +221,18 @@ const components: { [key: string]: React.FC<any> } = {
       {children}
     </blockquote>
   )),
-  code: React.memo(({ inline, className, children, ...props }: { inline?: boolean; className?: string; children: React.ReactNode }) => {
-    const match = /language-(\w+)/.exec(className || '');
-    return !inline && match ? (
-      <div className="relative">
-        <div className="absolute right-2 top-2 text-xs text-gray-500">
-          {match[1]}
-        </div>
-        <pre className="mt-4 p-4 bg-gray-800 rounded-lg overflow-x-auto">
-          <code className={className} {...props}>
-            {children}
-          </code>
-        </pre>
-      </div>
-    ) : (
-      <code className="bg-gray-800 px-1 py-0.5 rounded text-sm" {...props}>
+  pre: React.memo(({ children, ...props }: React.HTMLProps<HTMLPreElement>) => (
+    <pre className="overflow-x-auto whitespace-pre-wrap break-words" {...props}>
+      {children}
+    </pre>
+  )),
+  code: React.memo(({ children, className, ...props }: React.HTMLProps<HTMLElement>) => {
+    const isInline = !className;
+    return (
+      <code
+        className={`${isInline ? 'break-words' : ''} ${className || ''}`}
+        {...props}
+      >
         {children}
       </code>
     );
@@ -278,19 +275,11 @@ const components: { [key: string]: React.FC<any> } = {
       </figure>
     );
   }),
-  p: React.memo(({ children, ...props }: { children: React.ReactNode }) => {
-    // Check if the paragraph contains only an image
-    const containsOnlyImage = React.Children.count(children) === 1 && 
-      React.isValidElement(children) && 
-      (children.type === 'img' || children.type === ExternalImage);
-
-    // If it contains only an image, return the image directly
-    if (containsOnlyImage) {
-      return children;
-    }
-
-    return <p {...props}>{children}</p>;
-  }),
+  p: React.memo(({ children, ...props }: React.HTMLProps<HTMLParagraphElement>) => (
+    <p className="break-words" {...props}>
+      {children}
+    </p>
+  )),
 };
 
 // Set display names for components
@@ -391,4 +380,4 @@ export default function ArticleRenderer({ content, references = {}, showToc = tr
       </article>
     </div>
   );
-} 
+}
