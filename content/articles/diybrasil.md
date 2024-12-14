@@ -63,9 +63,9 @@ Evite sempre anticoncepcionais não-bioidênticos como Etinilestradiol (Diane 35
 
 #### Aplicação Oral
 
-Consiste na ingestão de drágeas ou pílulas de estradiol, geralmente duas vezes por dia em intervalos de ~12 horas. Resulta em níveis mais estáveis ​​versus administração sublingual/bucal, porém tende a gerar níveis elevados de estrona (E1), um estrógeno fraco, devido à passagem pelo fígado.
+A administração oral consiste na ingestão de drágeas ou pílulas de estradiol, geralmente duas vezes ao dia, com intervalos de aproximadamente 12 horas. Essa forma de administração oferece níveis mais estáveis de estradiol em comparação à administração sublingual ou bucal. No entanto, a via oral apresenta desvantagens, como a elevação dos níveis de estrona (E1), um estrógeno mais fraco, devido à passagem inicial pelo fígado (efeito de primeira passagem).
 
-Um estudo in vitro teve como resultado que concentrações altas de estrona podem ter um efeito antagonista ao estradiol. Entretanto, as evidências não demonstram resultados inferiores para a administração oral, seja no desenvolvimento dos seios ou na redistribuição de gordura, o que contradiz a noção de um efeito antagonístico da estrona no contexto específico da terapia hormonal transfeminina.
+Estudos in vitro sugerem que altas concentrações de estrona podem exercer efeitos antagonistas ao estradiol. Apesar disso, as evidências clínicas não mostram resultados inferiores com o uso oral, seja no desenvolvimento mamário ou na redistribuição de gordura corporal. Isso contradiz a hipótese de que a estrona tenha um impacto antagonista significativo no contexto da terapia hormonal transfeminina.
 
 ##### Cicloprimogyna (69 reais por mês)
 
