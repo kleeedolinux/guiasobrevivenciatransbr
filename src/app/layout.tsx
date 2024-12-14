@@ -30,6 +30,7 @@ export default function RootLayout({
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={`${inter.className} bg-white dark:bg-gray-900 text-black dark:text-gray-100 min-h-screen`}>
         <ThemeProvider>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
           <header className="bg-white dark:bg-gray-800 shadow-lg">
             <nav className="container mx-auto px-4">
               <div className="flex items-center justify-between h-16">
