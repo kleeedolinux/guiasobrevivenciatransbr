@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google';
 import Link from 'next/link';
 import { ThemeProvider } from 'next-themes';
 import ThemeToggle from '@/components/ThemeToggle';
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -72,66 +74,71 @@ export default function RootLayout({
       <head>
         <ThemeSwitcher />
       </head>
-      <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-gray-100">
-            <header className="bg-white dark:bg-gray-800 shadow-lg">
-              <nav className="container mx-auto px-4">
-                <div className="flex items-center justify-between h-16">
-                  <div className="flex-shrink-0">
-                    <Link href="/" className="text-2xl font-bold text-purple-700 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">
-                      Guia de Sobrevivência Trans
-                    </Link>
-                  </div>
-                  <div className="hidden md:flex md:items-center">
-                    <div className="flex items-baseline space-x-4">
-                      {navigation.map((item) => (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          className="text-black dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                        >
-                          {item.name}
-                        </Link>
-                      ))}
-                    </div>
-                    <div className="ml-4">
-                      <ThemeToggle />
-                    </div>
-                  </div>
+      <body className={`${inter.className} bg-white dark:bg-gray-900 min-h-screen`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <header className="bg-white dark:bg-gray-800 shadow-lg">
+            <nav className="container mx-auto px-4">
+              <div className="flex items-center justify-between h-16">
+                <div className="flex-shrink-0">
+                  <Link href="/" className="text-2xl font-bold text-purple-700 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">
+                    Guia de Sobrevivência Trans
+                  </Link>
                 </div>
-                {/* Mobile menu */}
-                <div className="md:hidden">
-                  <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <div className="hidden md:flex md:items-center">
+                  <div className="flex items-baseline space-x-4">
                     {navigation.map((item) => (
                       <Link
                         key={item.name}
                         href={item.href}
-                        className="text-black dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+                        className="text-black dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                       >
                         {item.name}
                       </Link>
                     ))}
-                    <div className="px-3 py-2">
-                      <ThemeToggle />
-                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <ThemeToggle />
                   </div>
                 </div>
-              </nav>
-            </header>
-            <main className="container mx-auto px-4">{children}</main>
-            <footer className="bg-white dark:bg-gray-800 mt-12">
-              <div className="container mx-auto px-4 py-8">
-                <div className="text-center text-black dark:text-gray-400">
-                  <p> {new Date().getFullYear()} Guia de Sobrevivência Trans no Brasil. Todos os direitos reservados.</p>
-                  <p className="mt-2">
-                    Este site fornece informações sobre como sobreviver ao Brasil sendo uma pessoa trans apenas para fins educacionais.
-                    Consulte profissionais de saúde para aconselhamento médico.
-                  </p>
+              </div>
+              {/* Mobile menu */}
+              <div className="md:hidden">
+                <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                  {navigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className="text-black dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                  <div className="px-3 py-2">
+                    <ThemeToggle />
+                  </div>
                 </div>
               </div>
-            </footer>
-          </div>
+            </nav>
+          </header>
+          <main className="container mx-auto px-4">{children}</main>
+          <footer className="bg-white dark:bg-gray-800 mt-12">
+            <div className="container mx-auto px-4 py-8">
+              <div className="text-center text-black dark:text-gray-400">
+                <p> {new Date().getFullYear()} Guia de Sobrevivência Trans no Brasil. Todos os direitos reservados.</p>
+                <p className="mt-2">
+                  Este site fornece informações sobre como sobreviver ao Brasil sendo uma pessoa trans apenas para fins educacionais.
+                  Consulte profissionais de saúde para aconselhamento médico.
+                </p>
+              </div>
+            </div>
+          </footer>
+          <Analytics />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>
