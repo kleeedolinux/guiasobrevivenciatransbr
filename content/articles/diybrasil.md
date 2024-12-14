@@ -65,7 +65,6 @@ Evite sempre anticoncepcionais não-bioidênticos como Etinilestradiol (Diane 35
 
 A administração oral consiste na ingestão de drágeas ou pílulas de estradiol, geralmente duas vezes ao dia, com intervalos de aproximadamente 12 horas. Essa forma de administração oferece níveis mais estáveis de estradiol em comparação à administração sublingual ou bucal. No entanto, a via oral apresenta desvantagens, como a elevação dos níveis de estrona (E1), um estrógeno mais fraco, devido à passagem inicial pelo fígado (efeito de primeira passagem).
 
-Estudos in vitro sugerem que altas concentrações de estrona podem exercer efeitos antagonistas ao estradiol. Apesar disso, as evidências clínicas não mostram resultados inferiores com o uso oral, seja no desenvolvimento mamário ou na redistribuição de gordura corporal. Isso contradiz a hipótese de que a estrona tenha um impacto antagonista significativo no contexto da terapia hormonal transfeminina.
 
 ##### Cicloprimogyna (69 reais por mês)
 
