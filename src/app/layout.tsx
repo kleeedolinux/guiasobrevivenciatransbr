@@ -8,8 +8,33 @@ import ThemeToggle from '@/components/ThemeToggle';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://guiasobrevivenciatrans.vercel.app/'),  
   title: 'Guia de Sobrevivência Trans no Brasil',
-  description: 'Informações baseadas em evidências sobre terapia hormonal transfeminina',
+  description: 'Um repositório abrangente de informações para pessoas trans enfrentarem os desafios de viver no Brasil.',
+  openGraph: {
+    title: 'Guia de Sobrevivência Trans no Brasil',
+    description: 'Um repositório abrangente de informações para pessoas trans enfrentarem os desafios de viver no Brasil.',
+    images: [
+      {
+        url: '/icone.png',
+        width: 1200,
+        height: 630,
+        alt: 'Imagem representativa do Guia de Sobrevivência Trans no Brasil',
+      },
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: 'guiasobrevivenciat',
+    creator: 'juliakle'
+    },
+  keywords: [
+    'trans', 'sobrevivência', 'direitos humanos', 'Brasil', 'guia',
+    'pessoas trans', 'discriminação', 'igualdade de direitos', 'orientação para trans',
+    'vida trans no Brasil', 'resistência trans', 'inclusão social', 'ativismo trans',
+    'direitos LGBT', 'conscientização trans', 'apoio a trans', 'recursos para trans',
+    'comunidade trans no Brasil'
+  ],
 };
 
 const navigation = [
@@ -81,7 +106,7 @@ export default function RootLayout({
               <div className="text-center text-black dark:text-gray-400">
                 <p>© {new Date().getFullYear()} Guia de Sobrevivência Trans no Brasil. Todos os direitos reservados.</p>
                 <p className="mt-2">
-                  Este site fornece informações sobre terapia hormonal transfeminina apenas para fins educacionais.
+                  Este site fornece informações sobre como sobreviver ao Brasil sendo uma pessoa trans apenas para fins educacionais.
                   Consulte profissionais de saúde para aconselhamento médico.
                 </p>
               </div>
