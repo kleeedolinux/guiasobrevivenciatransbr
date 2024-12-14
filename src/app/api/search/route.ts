@@ -19,9 +19,13 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q')?.toLowerCase() || '';
-    const tag = searchParams.get('tag')?.toLowerCase();
+    const tag = searchParams.get('tag')?.toLowerCase() || '';
+
+    console.log('Search request:', { query, tag }); // Debug log
 
     const results = await searchArticles(query, tag);
+
+    console.log('Search results count:', results.length); // Debug log
 
     return NextResponse.json({
       results: results.map(article => ({
@@ -40,7 +44,7 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error('Search API error:', error);
     return NextResponse.json(
-      { error: 'Failed to perform search' },
+      { error: 'Failed to perform search', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

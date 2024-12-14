@@ -9,6 +9,8 @@ const inter = Inter({ subsets: ['latin'] });
 const navigation = [
   { name: 'Início', href: '/' },
   { name: 'Artigos', href: '/articles' },
+  { name: 'Séries', href: '/articles/series' },
+  { name: 'Recentes', href: '/articles/latest' },
   { name: 'Buscar', href: '/search' },
   { name: 'Sobre', href: '/about' },
   { name: 'Comunidade', href: '/community' },

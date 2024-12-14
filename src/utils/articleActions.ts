@@ -162,19 +162,17 @@ const getSearchableText = (article: Article): string => {
 };
 
 export async function searchArticles(query: string, tag?: string): Promise<Article[]> {
-  const { articles, tags } = await loadArticles();
+  const { articles } = await loadArticles();
   let searchableArticles = Array.from(articles.values());
 
   // Filter by tag first if provided
   if (tag) {
-    const tagSlugs = tags.get(tag);
-    if (tagSlugs) {
-      searchableArticles = searchableArticles.filter(article => tagSlugs.has(article.slug));
-    } else {
-      return [];
-    }
+    searchableArticles = searchableArticles.filter(article => 
+      article.tags.some(t => t.toLowerCase() === tag.toLowerCase())
+    );
   }
 
+  // If no query, return all articles filtered by tag
   if (!query) return searchableArticles;
 
   const searchTerms = query.toLowerCase().split(/\s+/);
@@ -182,7 +180,15 @@ export async function searchArticles(query: string, tag?: string): Promise<Artic
 
   // Pre-compute searchable text for each article
   const searchableTexts = new Map(
-    searchableArticles.map(article => [article.slug, getSearchableText(article)])
+    searchableArticles.map(article => [
+      article.slug,
+      [
+        article.title,
+        article.excerpt,
+        ...article.tags,
+        ...(article.keywords || [])
+      ].join(' ').toLowerCase()
+    ])
   );
 
   searchableArticles.forEach(article => {
@@ -193,7 +199,7 @@ export async function searchArticles(query: string, tag?: string): Promise<Artic
       if (article.title.toLowerCase().includes(term)) score += 3;
       if (article.excerpt.toLowerCase().includes(term)) score += 2;
       if (article.tags.some(tag => tag.toLowerCase().includes(term))) score += 2;
-      if (article.keywords.some(keyword => keyword.toLowerCase().includes(term))) score += 2;
+      if (article.keywords?.some(keyword => keyword.toLowerCase().includes(term))) score += 2;
       if (searchableText.includes(term)) score += 1;
     });
 
@@ -202,7 +208,8 @@ export async function searchArticles(query: string, tag?: string): Promise<Artic
     }
   });
 
+  // Sort by score and return articles
   return Array.from(results.values())
     .sort((a, b) => b.score - a.score)
-    .map(({ article }) => article);
-} 
+    .map(result => result.article);
+}

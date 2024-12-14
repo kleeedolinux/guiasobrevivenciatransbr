@@ -29,7 +29,7 @@ const SearchResults = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const query = searchParams.get('q') || '';
-  const tag = searchParams.get('tag');
+  const currentTag = searchParams.get('tag');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState(query);
@@ -42,9 +42,12 @@ const SearchResults = () => {
       try {
         const params = new URLSearchParams();
         if (query) params.append('q', query);
-        if (tag) params.append('tag', tag);
+        if (currentTag) params.append('tag', currentTag);
         
         const response = await fetch(`/api/search?${params.toString()}`);
+        if (!response.ok) {
+          throw new Error('Search request failed');
+        }
         const data = await response.json();
         setResults(data.results);
 
@@ -69,20 +72,20 @@ const SearchResults = () => {
     };
 
     fetchResults();
-  }, [query, tag]);
+  }, [query, currentTag]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
     if (searchTerm) params.append('q', searchTerm);
-    if (tag) params.append('tag', tag);
+    if (currentTag) params.append('tag', currentTag);
     router.push(`/search?${params.toString()}`);
   };
 
   const handleTagClick = (selectedTag: string) => {
     const params = new URLSearchParams();
     if (query) params.append('q', query);
-    if (selectedTag !== tag) {
+    if (selectedTag !== currentTag) {
       params.append('tag', selectedTag);
     }
     router.push(`/search?${params.toString()}`);
@@ -124,7 +127,7 @@ const SearchResults = () => {
                       key={tagName}
                       onClick={() => handleTagClick(tagName)}
                       className={`w-full text-left px-3 py-2 rounded-lg flex justify-between items-center transition-colors ${
-                        tagName === tag
+                        tagName === currentTag
                           ? 'bg-blue-500 text-white'
                           : 'hover:bg-gray-200 dark:hover:bg-gray-700'
                       }`}
@@ -142,11 +145,11 @@ const SearchResults = () => {
 
           {/* Main Content */}
           <div className="flex-1">
-            {tag && (
+            {currentTag && (
               <div className="mb-4">
                 <span className="text-sm">
                   Filtrando por tag: 
-                  <span className="font-semibold ml-1">{tag}</span>
+                  <span className="font-semibold ml-1">{currentTag}</span>
                   <button
                     onClick={() => {
                       const params = new URLSearchParams();
@@ -187,7 +190,7 @@ const SearchResults = () => {
                           key={tagName}
                           onClick={() => handleTagClick(tagName)}
                           className={`text-sm px-3 py-1 rounded-full transition-colors ${
-                            tagName === tag
+                            tagName === currentTag
                               ? 'bg-blue-500 text-white'
                               : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
                           }`}
@@ -199,7 +202,7 @@ const SearchResults = () => {
                   </article>
                 ))}
               </div>
-            ) : query || tag ? (
+            ) : query || currentTag ? (
               <div className="text-center py-12">
                 <p className="text-gray-600 dark:text-gray-400">Nenhum resultado encontrado.</p>
                 <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
