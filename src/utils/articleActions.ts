@@ -46,13 +46,24 @@ export const loadArticles = cache(async () => {
     throw new Error(`Invalid date format: ${dateStr}`);
   }
 
+  // Helper function to create URL-safe slugs
+  function createSlug(filename: string): string {
+    return filename
+      .replace('.md', '')
+      .replace(/[\[\]]/g, '') // Remove square brackets
+      .replace(/[^\w\s-]/g, '') // Remove special characters
+      .trim()
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .toLowerCase(); // Convert to lowercase
+  }
+
   await Promise.all(articleFiles.map(async (filename) => {
     if (!filename.endsWith('.md')) return;
 
     const filePath = path.join(articlesDir, filename);
     const fileContent = await fs.readFile(filePath, 'utf8');
     const { data, content } = matter(fileContent);
-    const slug = filename.replace('.md', '');
+    const slug = createSlug(filename);
 
     const article: Article = {
       slug,
