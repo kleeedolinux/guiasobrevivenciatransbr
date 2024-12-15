@@ -31,59 +31,104 @@ const checkRateLimit = (identifier: string): boolean => {
   return true;
 }
 
+async function verifyCaptcha(token: string) {
+  try {
+    const verifyUrl = 'https://api.hcaptcha.com/siteverify';
+    const secret = process.env.CAPTCHA_SECRET_KEY;
+
+    if (!secret) {
+      console.error('CAPTCHA_SECRET_KEY not found in environment variables');
+      return false;
+    }
+
+    const response = await fetch(verifyUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        secret,
+        response: token,
+      }).toString(),
+    });
+
+    const data = await response.json();
+    console.log('Captcha verification response:', data);
+
+    return data.success;
+  } catch (error) {
+    console.error('Error verifying captcha:', error);
+    return false;
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
-    
+    console.log('Received request body:', { ...data, captchaToken: '...' });
+
+    const { captchaToken, ...validatedData } = data;
+
+    if (!captchaToken) {
+      return NextResponse.json({ error: 'Captcha não fornecido' }, { status: 400 });
+    }
+
+    const isValidCaptcha = await verifyCaptcha(captchaToken);
+    console.log('Captcha validation result:', isValidCaptcha);
+
+    if (!isValidCaptcha) {
+      return NextResponse.json({ error: 'Captcha inválido' }, { status: 400 });
+    }
+
     // Validate the data
-    const validatedData = reportSchema.parse(data);
+    const parsedData = reportSchema.parse(validatedData);
 
     // Check rate limit
-    const identifier = `${validatedData.username}-${validatedData.discordUsername || ''}-${new Date().toISOString().split('T')[0]}`;
+    const identifier = `${parsedData.username}-${parsedData.discordUsername || ''}-${new Date().toISOString().split('T')[0]}`;
     if (!checkRateLimit(identifier)) {
       throw new Error('Você atingiu o limite de reports por hora. Por favor, tente novamente mais tarde.');
     }
-    
+
     const webhookUrl = process.env.REPORT_WEBHOOK;
     if (!webhookUrl) {
       throw new Error('Webhook URL não configurada');
     }
 
     // Format article URL
-    const articleUrl = validatedData.articleUrl.startsWith('http') 
-      ? validatedData.articleUrl 
-      : `https://guiadesobrevivenciatrans.com${validatedData.articleUrl.startsWith('/') ? '' : '/'}${validatedData.articleUrl}`;
+    const articleUrl = parsedData.articleUrl.startsWith('http') 
+      ? parsedData.articleUrl 
+      : `https://guiadesobrevivenciatrans.com${parsedData.articleUrl.startsWith('/') ? '' : '/'}${parsedData.articleUrl}`;
 
     const embed = {
       title: '📢 Novo Report de Conteúdo',
-      color: getReportTypeColor(validatedData.reportType),
+      color: getReportTypeColor(parsedData.reportType),
       fields: [
         {
           name: '👤 Usuário',
-          value: validatedData.username,
+          value: parsedData.username,
           inline: true,
         },
         {
           name: '🏳️‍⚧️ Pronomes',
-          value: validatedData.pronouns,
+          value: parsedData.pronouns,
           inline: true,
         },
         {
           name: '📱 Discord',
-          value: validatedData.discordUsername || 'Não informado',
+          value: parsedData.discordUsername || 'Não informado',
           inline: true,
         },
         {
           name: '📄 Artigo',
-          value: `[${validatedData.articleTitle}](${articleUrl})`,
+          value: `[${parsedData.articleTitle}](${articleUrl})`,
         },
         {
           name: '⚠️ Tipo do Report',
-          value: getReportTypeLabel(validatedData.reportType),
+          value: getReportTypeLabel(parsedData.reportType),
         },
         {
           name: '📝 Descrição',
-          value: validatedData.description,
+          value: parsedData.description,
         },
       ],
       timestamp: new Date().toISOString(),
