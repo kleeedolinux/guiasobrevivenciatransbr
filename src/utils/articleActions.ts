@@ -61,8 +61,8 @@ export const loadArticles = cache(async () => {
       author: data.author,
       excerpt: data.excerpt,
       content,
-      tags: data.tags || [],
-      keywords: data.keywords || [],
+      tags: (data.tags || []).map((tag: string) => tag.toLowerCase()), // Normalize tags to lowercase
+      keywords: (data.keywords || []).map((keyword: string) => keyword.toLowerCase()), // Normalize keywords to lowercase
       series: data.series ? {
         name: data.series.name,
         order: data.series.order
@@ -133,7 +133,7 @@ export async function getSeriesArticles(seriesName: string): Promise<Article[]> 
 
 export async function getArticlesByTag(tag: string): Promise<Article[]> {
   const { articles, tags } = await loadArticles();
-  const slugs = tags.get(tag);
+  const slugs = tags.get(tag.toLowerCase());
   if (!slugs) return [];
   return Array.from(slugs)
     .map(slug => articles.get(slug)!)
@@ -194,53 +194,50 @@ const getSearchableText = (article: Article): string => {
 
 export async function searchArticles(query: string, tag?: string): Promise<Article[]> {
   const { articles } = await loadArticles();
-  let searchableArticles = Array.from(articles.values());
+  const searchTerms = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const normalizedTag = tag?.toLowerCase();
 
-  // Filter by tag first if provided
-  if (tag) {
-    searchableArticles = searchableArticles.filter(article => 
-      article.tags.some(t => t.toLowerCase() === tag.toLowerCase())
+  // Get all articles as an array
+  let results = Array.from(articles.values());
+
+  // Filter by tag if provided
+  if (normalizedTag) {
+    results = results.filter(article => 
+      article.tags.some(t => t.toLowerCase() === normalizedTag)
     );
   }
 
-  // If no query, return all articles filtered by tag
-  if (!query) return searchableArticles;
+  // If no search terms, return the tag-filtered results
+  if (searchTerms.length === 0) {
+    return results.sort((a, b) => b.date.getTime() - a.date.getTime());
+  }
 
-  const searchTerms = query.toLowerCase().split(/\s+/);
-  const results = new Map<string, { article: Article; score: number }>();
-
-  // Pre-compute searchable text for each article
-  const searchableTexts = new Map(
-    searchableArticles.map(article => [
-      article.slug,
-      [
-        article.title,
-        article.excerpt,
-        ...article.tags,
-        ...(article.keywords || [])
-      ].join(' ').toLowerCase()
-    ])
-  );
-
-  searchableArticles.forEach(article => {
+  // Score and filter articles based on search terms
+  const scoredResults = results.map(article => {
+    const searchableText = getSearchableText(article).toLowerCase();
     let score = 0;
-    const searchableText = searchableTexts.get(article.slug)!;
 
-    searchTerms.forEach(term => {
-      if (article.title.toLowerCase().includes(term)) score += 3;
-      if (article.excerpt.toLowerCase().includes(term)) score += 2;
-      if (article.tags.some(tag => tag.toLowerCase().includes(term))) score += 2;
-      if (article.keywords?.some(keyword => keyword.toLowerCase().includes(term))) score += 2;
-      if (searchableText.includes(term)) score += 1;
-    });
+    // Calculate score based on matches
+    for (const term of searchTerms) {
+      // Title matches get higher score
+      const titleMatches = (article.title.toLowerCase().match(new RegExp(term, 'g')) || []).length;
+      score += titleMatches * 3;
 
-    if (score > 0) {
-      results.set(article.slug, { article, score });
+      // Tag matches get medium score
+      const tagMatches = article.tags.filter(tag => tag.toLowerCase().includes(term)).length;
+      score += tagMatches * 2;
+
+      // Content matches get base score
+      const contentMatches = (searchableText.match(new RegExp(term, 'g')) || []).length;
+      score += contentMatches;
     }
+
+    return { article, score };
   });
 
-  // Sort by score and return articles
-  return Array.from(results.values())
-    .sort((a, b) => b.score - a.score)
-    .map(result => result.article);
+  // Filter out zero-score results and sort by score
+  return scoredResults
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || b.article.date.getTime() - a.article.date.getTime())
+    .map(({ article }) => article);
 }
