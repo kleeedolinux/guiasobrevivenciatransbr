@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ['latin'] });
 const navigation = [
   { name: 'Início', href: '/' },
   { name: 'Artigos', href: '/articles' },
-  { name: 'Séries', href: '/series' },
+  { name: 'Sobre mim', href: '/sobre' },
   { name: 'Buscar', href: '/search' },
 ];
 
@@ -98,7 +98,7 @@ export default function RootLayout({
                       </Link>
                     </li>
                     <li>
-                      <Link href="/about" className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                      <Link href="/sobre" className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
                         Sobre
                       </Link>
                     </li>
