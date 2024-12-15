@@ -7,9 +7,13 @@ import { formatDate } from '@/utils/dateFormatter';
 import PageTransition, { FadeIn, SlideIn } from '@/components/PageTransition';
 import RedditText from '@/components/RedditText';
 import Link from 'next/link';
+import ReportButton from '@/components/ReportButton';
 
 interface ArticlePageProps {
-  params: { slug: string };
+  params: {
+    slug: string;
+  };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export async function generateMetadata(
@@ -44,24 +48,32 @@ export default async function ArticlePage({
       <article className="bg-white/80 dark:bg-gray-800/80 rounded-lg shadow-xl p-8 backdrop-blur-lg">
         <FadeIn>
           <header className="mb-8">
-            <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
-              {article.title}
-            </h1>
-            <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400">
-              <time className="flex items-center">
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                {new Date(article.date).toLocaleDateString('pt-BR')}
-              </time>
-              {article.author && (
-                <span className="flex items-center">
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  {article.author}
-                </span>
-              )}
+            <div className="flex justify-between items-center mb-8">
+              <div>
+                <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
+                  {article.title}
+                </h1>
+                <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400">
+                  <time className="flex items-center">
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    {new Date(article.date).toLocaleDateString('pt-BR')}
+                  </time>
+                  {article.author && (
+                    <span className="flex items-center">
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      {article.author}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <ReportButton
+                articleTitle={article.title}
+                articleUrl={`https://guiadesobrevivenciatrans.com/articles/${params.slug}`}
+              />
             </div>
           </header>
         </FadeIn>
