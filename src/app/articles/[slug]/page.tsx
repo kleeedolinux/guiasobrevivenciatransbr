@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
+import type { Metadata, ResolvingMetadata } from 'next';
 import ArticleRenderer from '@/components/ArticleRenderer';
 import TableOfContents from '@/components/TableOfContents';
 import { getArticle } from '@/utils/articleActions';
@@ -9,15 +9,9 @@ import RedditText from '@/components/RedditText';
 import Link from 'next/link';
 import ReportButton from '@/components/ReportButton';
 
-interface ArticlePageProps {
-  params: {
-    slug: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
-}
-
 export async function generateMetadata(
-  { params }: ArticlePageProps
+  { params }: { params: { slug: string } },
+  parent: ResolvingMetadata
 ): Promise<Metadata> {
   const article = await getArticle(params.slug);
 
@@ -34,14 +28,18 @@ export async function generateMetadata(
   };
 }
 
-export default async function ArticlePage({
-  params,
-}: ArticlePageProps) {
-  const article = await getArticle(params.slug);
+interface PageContext {
+  params: { slug: string };
+}
 
-  if (!article) {
-    notFound();
-  }
+async function getPageData(context: PageContext) {
+  const article = await getArticle(context.params.slug);
+  if (!article) notFound();
+  return article;
+}
+
+export default async function Page(context: PageContext) {
+  const article = await getPageData(context);
 
   return (
     <PageTransition className="container mx-auto px-4 py-8 max-w-4xl">
@@ -72,7 +70,7 @@ export default async function ArticlePage({
               </div>
               <ReportButton
                 articleTitle={article.title}
-                articleUrl={`https://guiadesobrevivenciatrans.com/articles/${params.slug}`}
+                articleUrl={`/articles/${context.params.slug}`}
               />
             </div>
           </header>
