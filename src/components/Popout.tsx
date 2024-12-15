@@ -12,6 +12,8 @@ const Popout: React.FC = () => {
         setIsVisible(false);
     };
 
+    const DISCORD_LINK = 'https://discord.gg/WCbhw7MZW9';
+
     if (!isVisible) return null;
 
     return (
@@ -27,7 +29,7 @@ const Popout: React.FC = () => {
             <div className="popout-content">
                 <p>Entre no nosso servidor para ajudar a nossa comunidade e acrescer</p>
                 <div className="button-container">
-                    <button className="join-button">
+                    <button className="join-button" onClick={() => window.open(DISCORD_LINK, '_blank')}> 
                         <FontAwesomeIcon icon={faDiscord} /> Entrar no servidor
                     </button>
                 </div>
