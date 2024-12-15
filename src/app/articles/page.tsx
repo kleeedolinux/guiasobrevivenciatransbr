@@ -44,7 +44,7 @@ export default async function ArticlesPage() {
     acc[year][month].push({
       slug: article.slug,
       title: article.title,
-      date: article.date.toISOString(),
+      date: article.date instanceof Date ? article.date.toLocaleDateString('pt-BR') : article.date,
       excerpt: article.excerpt,
       tags: article.tags,
       series: article.series

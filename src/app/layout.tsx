@@ -137,9 +137,9 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
-          <Analytics />
-          <SpeedInsights />
         </ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
