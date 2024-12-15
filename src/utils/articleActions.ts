@@ -61,8 +61,8 @@ export const loadArticles = cache(async () => {
       author: data.author,
       excerpt: data.excerpt,
       content,
-      tags: (data.tags || []).map(tag => tag.toLowerCase()), // Normalize tags to lowercase
-      keywords: (data.keywords || []).map(keyword => keyword.toLowerCase()), // Normalize keywords to lowercase
+      tags: (data.tags || []).map((tag: string) => tag.toLowerCase()), // Normalize tags to lowercase
+      keywords: (data.keywords || []).map((keyword: string) => keyword.toLowerCase()), // Normalize keywords to lowercase
       series: data.series ? {
         name: data.series.name,
         order: data.series.order
