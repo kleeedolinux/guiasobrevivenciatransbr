@@ -11,6 +11,7 @@ import ReportButton from '@/components/ReportButton';
 
 type Props = {
   params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -33,7 +34,7 @@ export async function generateStaticParams() {
   return [];
 }
 
-export default async function Page({ params }: Props) {
+export default async function Page({ params, searchParams }: Props) {
   const article = await getArticle(params.slug);
 
   if (!article) {
