@@ -56,7 +56,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
 
           {/* Main Content */}
-          <article className="lg:flex-1">
+          <article className="lg:flex-1 bg-white dark:bg-gray-800 rounded-lg p-8 shadow-lg">
             <header className="mb-8">
               <h1 className="text-4xl font-bold mb-4 text-purple-700 dark:text-purple-400 break-words hyphens-auto">
                 {article.title}
@@ -81,7 +81,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   {article.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm break-words"
+                      className="px-3 py-1 bg-purple-100 dark:bg-gray-700 text-purple-900 dark:text-purple-300 rounded-full text-sm break-words"
                     >
                       {tag}
                     </span>
@@ -90,19 +90,20 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               )}
             </header>
 
-            <div className="prose prose-purple dark:prose-invert max-w-none prose-img:max-w-full prose-pre:break-words prose-pre:whitespace-pre-wrap">
+            <div className="prose prose-purple dark:prose-invert max-w-none prose-headings:text-purple-700 dark:prose-headings:text-purple-400 prose-p:text-gray-800 dark:prose-p:text-gray-300 prose-a:text-purple-700 dark:prose-a:text-purple-400 hover:prose-a:text-purple-800 dark:hover:prose-a:text-purple-300 prose-img:rounded-lg prose-img:shadow-lg prose-strong:text-purple-700 dark:prose-strong:text-purple-400 prose-code:text-purple-700 dark:prose-code:text-purple-400 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-900 prose-pre:text-gray-800 dark:prose-pre:text-gray-300 prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-400 prose-blockquote:border-purple-300 dark:prose-blockquote:border-purple-700">
               <ArticleRenderer content={article.content} />
             </div>
 
             {article.references && Object.keys(article.references).length > 0 && (
-              <footer className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
+              <footer className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
                 <h2 className="text-2xl font-bold mb-4 text-purple-700 dark:text-purple-400">
                   Referências
                 </h2>
-                <ul className="space-y-2">
+                <ul className="space-y-2 text-gray-800 dark:text-gray-300">
                   {Object.entries(article.references).map(([key, value]) => (
-                    <li key={key} className="text-gray-700 dark:text-gray-300">
-                      <strong>{key}:</strong> {value}
+                    <li key={key} className="break-words">
+                      <span className="font-medium text-purple-700 dark:text-purple-400">[{key}]</span>{' '}
+                      {value}
                     </li>
                   ))}
                 </ul>

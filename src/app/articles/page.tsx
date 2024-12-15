@@ -55,28 +55,28 @@ export default async function ArticlesPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8 text-purple-400">Biblioteca de Artigos</h1>
+      <h1 className="text-4xl font-bold mb-8 text-purple-700 dark:text-purple-400">Biblioteca de Artigos</h1>
 
       {/* Quick Links */}
       <div className="mb-12">
-        <div className="bg-gray-800 rounded-lg p-6">
-          <h2 className="text-2xl font-bold mb-4 text-purple-400">Navegação Rápida</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+          <h2 className="text-2xl font-bold mb-4 text-purple-700 dark:text-purple-400">Navegação Rápida</h2>
           <div className="flex flex-wrap gap-4">
             <Link
               href="/articles/latest"
-              className="px-4 py-2 bg-purple-900 text-purple-100 rounded-lg hover:bg-purple-800"
+              className="px-4 py-2 bg-purple-100 dark:bg-purple-900 text-purple-900 dark:text-purple-100 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors"
             >
               Artigos Recentes
             </Link>
             <Link
               href="/articles/series"
-              className="px-4 py-2 bg-purple-900 text-purple-100 rounded-lg hover:bg-purple-800"
+              className="px-4 py-2 bg-purple-100 dark:bg-purple-900 text-purple-900 dark:text-purple-100 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors"
             >
               Séries de Artigos
             </Link>
             <Link
               href="/search"
-              className="px-4 py-2 bg-purple-900 text-purple-100 rounded-lg hover:bg-purple-800"
+              className="px-4 py-2 bg-purple-100 dark:bg-purple-900 text-purple-900 dark:text-purple-100 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors"
             >
               Buscar Artigos
             </Link>
@@ -86,13 +86,13 @@ export default async function ArticlesPage() {
 
       {/* Tags Navigation */}
       <div className="mb-12">
-        <h2 className="text-2xl font-bold mb-4 text-purple-400">Categorias</h2>
+        <h2 className="text-2xl font-bold mb-4 text-purple-700 dark:text-purple-400">Categorias</h2>
         <div className="flex flex-wrap gap-2">
           {allTags.map(tag => (
             <Link
               key={tag}
               href={`/search?tag=${encodeURIComponent(tag)}`}
-              className="px-3 py-1 bg-gray-800 text-purple-300 rounded-full hover:bg-gray-700"
+              className="px-3 py-1 bg-purple-100 dark:bg-gray-800 text-purple-900 dark:text-purple-300 rounded-full hover:bg-purple-200 dark:hover:bg-gray-700 transition-colors"
             >
               {tag}
             </Link>
@@ -106,28 +106,28 @@ export default async function ArticlesPage() {
           .sort(([yearA], [yearB]) => Number(yearB) - Number(yearA))
           .map(([year, months]) => (
             <section key={year}>
-              <h2 className="text-3xl font-bold mb-6 text-purple-400">{year}</h2>
+              <h2 className="text-3xl font-bold mb-6 text-purple-700 dark:text-purple-400">{year}</h2>
               <div className="space-y-8">
                 {Object.entries(months).map(([month, monthArticles]) => (
                   <div key={month}>
-                    <h3 className="text-xl font-bold mb-4 text-purple-300 capitalize">{month}</h3>
+                    <h3 className="text-xl font-bold mb-4 text-purple-600 dark:text-purple-300 capitalize">{month}</h3>
                     <div className="space-y-4">
                       {monthArticles.map(article => (
-                        <article key={article.slug} className="bg-gray-800 rounded-lg p-6">
+                        <article key={article.slug} className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
                           <h4 className="text-xl font-bold mb-2">
                             <Link
                               href={`/articles/${article.slug}`}
-                              className="text-purple-400 hover:text-purple-300"
+                              className="text-purple-700 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
                             >
                               {article.title}
                             </Link>
                           </h4>
                           {article.series && (
-                            <div className="text-sm text-gray-400 mb-2">
+                            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                               Parte da série: {article.series.name}
                             </div>
                           )}
-                          <div className="text-gray-300 mb-4">
+                          <div className="text-gray-800 dark:text-gray-300 mb-4">
                             <RedditText text={article.excerpt} />
                           </div>
                           <div className="flex flex-wrap gap-2">
@@ -135,7 +135,7 @@ export default async function ArticlesPage() {
                               <Link
                                 key={tag}
                                 href={`/search?tag=${encodeURIComponent(tag)}`}
-                                className="text-sm px-2 py-1 bg-gray-700 text-purple-300 rounded-full hover:bg-gray-600"
+                                className="text-sm px-2 py-1 bg-purple-100 dark:bg-gray-700 text-purple-900 dark:text-purple-300 rounded-full hover:bg-purple-200 dark:hover:bg-gray-600 transition-colors"
                               >
                                 {tag}
                               </Link>
