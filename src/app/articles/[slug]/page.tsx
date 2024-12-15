@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import type { Metadata, ResolvingMetadata } from 'next';
+import type { Metadata } from 'next';
 import ArticleRenderer from '@/components/ArticleRenderer';
 import TableOfContents from '@/components/TableOfContents';
 import { getArticle } from '@/utils/articleActions';
@@ -9,11 +9,12 @@ import RedditText from '@/components/RedditText';
 import Link from 'next/link';
 import ReportButton from '@/components/ReportButton';
 
-export async function generateMetadata(
-  { params }: { params: { slug: string } },
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  const article = await getArticle(params.slug);
+type Props = {
+  params: { slug: string };
+};
+
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const article = await getArticle(props.params.slug);
 
   if (!article) {
     return {
@@ -28,18 +29,16 @@ export async function generateMetadata(
   };
 }
 
-interface PageContext {
-  params: { slug: string };
+export async function generateStaticParams() {
+  return [];
 }
 
-async function getPageData(context: PageContext) {
-  const article = await getArticle(context.params.slug);
-  if (!article) notFound();
-  return article;
-}
+export default async function Page({ params }: Props) {
+  const article = await getArticle(params.slug);
 
-export default async function Page(context: PageContext) {
-  const article = await getPageData(context);
+  if (!article) {
+    notFound();
+  }
 
   return (
     <PageTransition className="container mx-auto px-4 py-8 max-w-4xl">
@@ -70,7 +69,7 @@ export default async function Page(context: PageContext) {
               </div>
               <ReportButton
                 articleTitle={article.title}
-                articleUrl={`/articles/${context.params.slug}`}
+                articleUrl={`/articles/${params.slug}`}
               />
             </div>
           </header>
