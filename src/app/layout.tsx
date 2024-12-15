@@ -27,6 +27,7 @@ export default function RootLayout({
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <ThemeSwitcher />
+        <link rel="icon" href="favicon.ico" />
       </head>
       <body className={`${inter.className} bg-gradient-to-br from-white to-purple-50 dark:from-gray-900 dark:to-purple-950 min-h-screen`}>
         <ThemeProvider
