@@ -350,7 +350,14 @@ export default function ArticleRenderer({ content, references = {}, showToc = tr
       )}
       
       <article className="min-w-0 flex-1">
-        <div className="prose prose-invert prose-purple max-w-none">
+        <div className="prose prose-slate dark:prose-invert max-w-none
+          prose-headings:text-gray-900 dark:prose-headings:text-gray-100
+          prose-p:text-gray-900 dark:prose-p:text-gray-300
+          prose-strong:text-gray-900 dark:prose-strong:text-gray-200
+          prose-ul:text-gray-900 dark:prose-ul:text-gray-300
+          prose-ol:text-gray-900 dark:prose-ol:text-gray-300
+          prose-li:text-gray-900 dark:prose-li:text-gray-300
+          prose-blockquote:text-gray-900 dark:prose-blockquote:text-gray-300">
           <DynamicMarkdown
             remarkPlugins={[remarkGfm, remarkMath]}
             rehypePlugins={[
@@ -366,11 +373,11 @@ export default function ArticleRenderer({ content, references = {}, showToc = tr
         </div>
 
         {Object.keys(references).length > 0 && (
-          <div className="mt-12 pt-8 border-t border-gray-700">
-            <h2 className="text-2xl font-bold mb-4 text-purple-400">References</h2>
+          <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-purple-400">References</h2>
             <ol className="list-decimal list-inside space-y-2">
               {Object.entries(references).map(([key, value]) => (
-                <li key={key} id={`ref-${key}`} className="text-gray-300">
+                <li key={key} id={`ref-${key}`} className="text-gray-900 dark:text-gray-300">
                   {value}
                 </li>
               ))}

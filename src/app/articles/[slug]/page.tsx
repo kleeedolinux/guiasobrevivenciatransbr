@@ -52,7 +52,7 @@ export default async function Page({ params, searchParams }: Props) {
                 <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
                   {article.title}
                 </h1>
-                <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400">
+                <div className="flex flex-wrap items-center gap-4 text-gray-700 dark:text-gray-400">
                   <time className="flex items-center">
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -84,7 +84,7 @@ export default async function Page({ params, searchParams }: Props) {
         </FadeIn>
 
         <SlideIn direction="up" delay={0.2}>
-          <div className="prose dark:prose-invert max-w-none">
+          <div className="prose dark:prose-invert prose-gray dark:prose-gray max-w-none">
             <ArticleRenderer content={article.content} references={article.references} />
           </div>
         </SlideIn>
@@ -115,7 +115,7 @@ export default async function Page({ params, searchParams }: Props) {
               </Link>
 
               {article.series && (
-                <div className="text-gray-600 dark:text-gray-400">
+                <div className="text-gray-700 dark:text-gray-400">
                   Parte da série: {article.series.name} ({article.series.order})
                 </div>
               )}
