@@ -27,7 +27,7 @@ const Popout: React.FC = () => {
         >
             <button onClick={handleClose} className="close-button">✖</button>
             <div className="popout-content">
-                <p>Entre no nosso servidor para ajudar a nossa comunidade e acrescer</p>
+                <p>Entre no nosso servidor para ajudar a nossa comunidade a crescer</p>
                 <div className="button-container">
                     <button className="join-button" onClick={() => window.open(DISCORD_LINK, '_blank')}> 
                         <FontAwesomeIcon icon={faDiscord} /> Entrar no servidor
