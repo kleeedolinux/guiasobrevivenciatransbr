@@ -15,6 +15,37 @@ export const loadArticles = cache(async () => {
   const tags = new Map<string, Set<string>>();
   const keywords = new Map<string, Set<string>>();
 
+  // Helper function to parse dates in various formats and return a valid Date object
+  function parseDateString(dateStr: string): Date {
+    // Remove any quotes from the date string
+    dateStr = dateStr.replace(/['"]/g, '');
+    
+    // Try parsing DD-MM-YYYY format
+    const ddmmyyyy = /^(\d{1,2})-(\d{1,2})-(\d{4})$/;
+    const ddmmyyyyMatch = dateStr.match(ddmmyyyy);
+    if (ddmmyyyyMatch) {
+      const [_, day, month, year] = ddmmyyyyMatch;
+      return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    }
+
+    // Try parsing YYYY-MM-DD format
+    const yyyymmdd = /^(\d{4})-(\d{1,2})-(\d{1,2})$/;
+    const yyyymmddMatch = dateStr.match(yyyymmdd);
+    if (yyyymmddMatch) {
+      const [_, year, month, day] = yyyymmddMatch;
+      return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    }
+
+    // If no patterns match, try native Date parsing as fallback
+    const date = new Date(dateStr);
+    if (!isNaN(date.getTime())) {
+      return date;
+    }
+
+    // If all parsing fails, throw an error
+    throw new Error(`Invalid date format: ${dateStr}`);
+  }
+
   await Promise.all(articleFiles.map(async (filename) => {
     if (!filename.endsWith('.md')) return;
 
@@ -26,7 +57,7 @@ export const loadArticles = cache(async () => {
     const article: Article = {
       slug,
       title: data.title,
-      date: new Date(data.date),
+      date: parseDateString(data.date),
       author: data.author,
       excerpt: data.excerpt,
       content,
@@ -36,7 +67,7 @@ export const loadArticles = cache(async () => {
         name: data.series.name,
         order: data.series.order
       } : undefined,
-      lastModified: data.lastModified ? new Date(data.lastModified) : undefined,
+      lastModified: data.lastModified ? parseDateString(data.lastModified) : undefined,
       references: data.references || {}
     };
 
