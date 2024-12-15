@@ -95,6 +95,43 @@ const SearchResults = () => {
     <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row gap-8">
+          {/* Tag filter section */}
+          <div className="w-full md:w-64 mb-4 md:mb-0">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
+              <h3 className="text-lg font-semibold mb-2">Filtrar por Tag</h3>
+              <div className="max-h-96 overflow-y-auto pr-2 space-y-2" style={{ scrollbarWidth: 'thin' }}>
+                {allTags.sort((a, b) => b.count - a.count).map(({ tag, count }) => (
+                  <div
+                    key={tag}
+                    className={`flex items-center justify-between cursor-pointer p-2 rounded ${
+                      currentTag === tag
+                        ? 'bg-purple-100 dark:bg-purple-900'
+                        : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                    }`}
+                    onClick={() => {
+                      if (currentTag === tag) {
+                        // Remove tag filter
+                        const params = new URLSearchParams(searchParams.toString());
+                        params.delete('tag');
+                        router.push(`/search?${params.toString()}`);
+                      } else {
+                        // Add tag filter
+                        const params = new URLSearchParams(searchParams.toString());
+                        params.set('tag', tag);
+                        router.push(`/search?${params.toString()}`);
+                      }
+                    }}
+                  >
+                    <span className="text-sm">{tag}</span>
+                    <span className="text-xs bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded-full">
+                      {count}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* Sidebar */}
           <div className="w-full md:w-64 shrink-0">
             <div className="sticky top-8 space-y-6 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
