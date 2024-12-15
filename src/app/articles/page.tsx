@@ -1,4 +1,5 @@
 import { getAllArticles } from '../../utils/articleActions';
+import { calculateReadingTime } from '@/utils/readingTime';
 import Link from 'next/link';
 import PageTransition, { FadeIn, SlideIn } from '../../components/PageTransition';
 
@@ -46,9 +47,14 @@ export default async function ArticlesPage() {
                       </span>
                     ))}
                   </div>
-                  <time className="text-sm text-gray-500 dark:text-gray-400">
-                    {new Date(article.date).toLocaleDateString('pt-BR')}
-                  </time>
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      {calculateReadingTime(article.content)}
+                    </span>
+                    <time className="text-sm text-gray-500 dark:text-gray-400">
+                      {new Date(article.date).toLocaleDateString('pt-BR')}
+                    </time>
+                  </div>
                 </div>
               </article>
             </Link>
