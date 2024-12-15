@@ -7,6 +7,7 @@ import ThemeSwitcher from '../components/ThemeSwitcher';
 import ThemeToggle from '../components/ThemeToggle';
 import MobileMenu from '../components/MobileMenu';
 import Link from 'next/link';
+import Popout from '../components/Popout';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -66,7 +67,7 @@ export default function RootLayout({
               </div>
             </nav>
           </header>
-
+          <Popout />
           <main className="flex-grow">
             {children}
           </main>
