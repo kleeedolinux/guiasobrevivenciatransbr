@@ -10,12 +10,12 @@ import Link from 'next/link';
 import ReportButton from '@/components/ReportButton';
 
 type Props = {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const article = await getArticle(props.params.slug);
+  const article = await getArticle((await props.params).slug);
 
   if (!article) {
     return {
@@ -35,7 +35,7 @@ export async function generateStaticParams() {
 }
 
 export default async function Page({ params, searchParams }: Props) {
-  const article = await getArticle(params.slug);
+  const article = await getArticle((await params).slug);
 
   if (!article) {
     notFound();
@@ -70,7 +70,7 @@ export default async function Page({ params, searchParams }: Props) {
               </div>
               <ReportButton
                 articleTitle={article.title}
-                articleUrl={`/articles/${params.slug}`}
+                articleUrl={`/articles/${(await params).slug}`}
               />
             </div>
           </header>

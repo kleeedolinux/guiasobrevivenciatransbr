@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ReportData, REPORT_TYPES } from '@/utils/reportSystem';
+import { ReportData, reportSchema } from '@/utils/reportSystem';
+
+const REPORT_TYPES = reportSchema.shape.reportType._def.values;
 
 interface ReportButtonProps {
   articleTitle: string;
