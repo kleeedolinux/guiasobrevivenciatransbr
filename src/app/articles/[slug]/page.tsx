@@ -78,7 +78,7 @@ export default async function Page({ params, searchParams }: Props) {
 
         <SlideIn direction="up" delay={0.2}>
           <div className="prose dark:prose-invert max-w-none">
-            <ArticleRenderer content={article.content} />
+            <ArticleRenderer content={article.content} references={article.references} />
           </div>
         </SlideIn>
 
