@@ -1,117 +1,121 @@
-import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import ArticleRenderer from '@/components/ArticleRenderer';
 import TableOfContents from '@/components/TableOfContents';
 import { getArticle } from '@/utils/articleActions';
 import { formatDate } from '@/utils/dateFormatter';
+import PageTransition, { FadeIn, SlideIn } from '@/components/PageTransition';
+import RedditText from '@/components/RedditText';
+import Link from 'next/link';
+import ReportButton from '@/components/ReportButton';
 
-interface ArticlePageProps {
-  params: Promise<{
-    slug: string;
-  }>;
-}
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
-export async function generateMetadata(
-  { params }: ArticlePageProps
-): Promise<Metadata> {
-  const resolvedParams = await params;
-  const article = await getArticle(resolvedParams.slug);
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const article = await getArticle((await props.params).slug);
 
   if (!article) {
     return {
-      title: 'Article Not Found',
-      description: 'The requested article could not be found.',
+      title: 'Artigo não encontrado',
+      description: 'O artigo que você está procurando não foi encontrado.',
     };
   }
 
   return {
-    title: article.title,
-    description: article.excerpt,
-    openGraph: {
-      title: article.title,
-      description: article.excerpt,
-      type: 'article',
-      authors: [article.author],
-      publishedTime: article.date.toISOString(),
-      modifiedTime: article.lastModified?.toISOString(),
-    },
+    title: `${article.title} - Guia de Sobrevivência Trans`,
+    description: article.excerpt || 'Leia mais sobre este artigo no Guia de Sobrevivência Trans.',
   };
 }
 
-export default async function ArticlePage({ params }: ArticlePageProps) {
-  const resolvedParams = await params;
-  const article = await getArticle(resolvedParams.slug);
+export async function generateStaticParams() {
+  return [];
+}
+
+export default async function Page({ params, searchParams }: Props) {
+  const article = await getArticle((await params).slug);
 
   if (!article) {
     notFound();
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col lg:flex-row-reverse gap-8">
-          {/* Sidebar */}
-          <div className="lg:w-64 shrink-0">
-            <TableOfContents articleContent={article.content} />
-          </div>
-
-          {/* Main Content */}
-          <article className="lg:flex-1 bg-white dark:bg-gray-800 rounded-lg p-8 shadow-lg">
-            <header className="mb-8">
-              <h1 className="text-4xl font-bold mb-4 text-purple-700 dark:text-purple-400 break-words hyphens-auto">
-                {article.title}
-              </h1>
-              <div className="flex flex-wrap gap-4 items-center text-sm text-gray-600 dark:text-gray-400">
-                <time dateTime={article.date.toISOString()} className="break-words">
-                  {formatDate(article.date)}
-                </time>
-                {article.lastModified && (
-                  <span className="break-words">
-                    Atualizado em {formatDate(article.lastModified)}
-                  </span>
-                )}
-                {article.author && (
-                  <span className="break-words">
-                    por <span className="font-medium">{article.author}</span>
-                  </span>
-                )}
-              </div>
-              {article.tags && article.tags.length > 0 && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {article.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 bg-purple-100 dark:bg-gray-700 text-purple-900 dark:text-purple-300 rounded-full text-sm break-words"
-                    >
-                      {tag}
+    <PageTransition className="container mx-auto px-4 py-8 max-w-4xl">
+      <article className="bg-white/80 dark:bg-gray-800/80 rounded-lg shadow-xl p-8 backdrop-blur-lg">
+        <FadeIn>
+          <header className="mb-8">
+            <div className="flex justify-between items-center mb-8">
+              <div>
+                <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
+                  {article.title}
+                </h1>
+                <div className="flex flex-wrap items-center gap-4 text-gray-600 dark:text-gray-400">
+                  <time className="flex items-center">
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    {new Date(article.date).toLocaleDateString('pt-BR')}
+                  </time>
+                  {article.author && (
+                    <span className="flex items-center">
+                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      {article.author}
                     </span>
-                  ))}
+                  )}
                 </div>
-              )}
-            </header>
+              </div>
+              <ReportButton
+                articleTitle={article.title}
+                articleUrl={`/articles/${(await params).slug}`}
+              />
+            </div>
+          </header>
+        </FadeIn>
 
-            <div className="prose prose-purple dark:prose-invert max-w-none prose-headings:text-purple-700 dark:prose-headings:text-purple-400 prose-p:text-gray-800 dark:prose-p:text-gray-300 prose-a:text-purple-700 dark:prose-a:text-purple-400 hover:prose-a:text-purple-800 dark:hover:prose-a:text-purple-300 prose-img:rounded-lg prose-img:shadow-lg prose-strong:text-purple-700 dark:prose-strong:text-purple-400 prose-code:text-purple-700 dark:prose-code:text-purple-400 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-900 prose-pre:text-gray-800 dark:prose-pre:text-gray-300 prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-400 prose-blockquote:border-purple-300 dark:prose-blockquote:border-purple-700">
-              <ArticleRenderer content={article.content} />
+        <SlideIn direction="up" delay={0.2}>
+          <div className="prose dark:prose-invert max-w-none">
+            <ArticleRenderer content={article.content} />
+          </div>
+        </SlideIn>
+
+        <FadeIn delay={0.4}>
+          <footer className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex flex-wrap gap-2 mb-6">
+              {article.tags?.map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/search?tag=${encodeURIComponent(tag)}`}
+                  className="inline-block bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors"
+                >
+                  {tag}
+                </Link>
+              ))}
             </div>
 
-            {article.references && Object.keys(article.references).length > 0 && (
-              <footer className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-                <h2 className="text-2xl font-bold mb-4 text-purple-700 dark:text-purple-400">
-                  Referências
-                </h2>
-                <ul className="space-y-2 text-gray-800 dark:text-gray-300">
-                  {Object.entries(article.references).map(([key, value]) => (
-                    <li key={key} className="break-words">
-                      <span className="font-medium text-purple-700 dark:text-purple-400">[{key}]</span>{' '}
-                      {value}
-                    </li>
-                  ))}
-                </ul>
-              </footer>
-            )}
-          </article>
-        </div>
-      </div>
-    </div>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <Link
+                href="/articles"
+                className="inline-flex items-center text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Voltar para Artigos
+              </Link>
+
+              {article.series && (
+                <div className="text-gray-600 dark:text-gray-400">
+                  Parte da série: {article.series.name} ({article.series.order})
+                </div>
+              )}
+            </div>
+          </footer>
+        </FadeIn>
+      </article>
+    </PageTransition>
   );
 }

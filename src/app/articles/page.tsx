@@ -1,155 +1,60 @@
-import { getAllArticles, getAllTags } from '@/utils/articleActions';
+import { getAllArticles } from '../../utils/articleActions';
 import Link from 'next/link';
-import { Metadata } from 'next';
-import RedditText from '@/components/RedditText';
-
-export const metadata: Metadata = {
-  title: 'Artigos - Guia de Sobrevivência Trans',
-  description: 'Biblioteca completa de artigos sobre terapia hormonal transfeminina',
-};
-
-interface GroupedArticles {
-  [year: string]: {
-    [month: string]: Array<{
-      slug: string;
-      title: string;
-      date: string;
-      excerpt: string;
-      tags: string[];
-      series?: {
-        name: string;
-        order: number;
-      };
-    }>;
-  };
-}
+import PageTransition, { FadeIn, SlideIn } from '../../components/PageTransition';
 
 export default async function ArticlesPage() {
   const articles = await getAllArticles();
-  const allTags = await getAllTags();
-
-  // Group articles by year and month
-  const groupedArticles = articles.reduce<GroupedArticles>((acc, article) => {
-    const date = new Date(article.date);
-    const year = date.getFullYear().toString();
-    const month = date.toLocaleString('pt-BR', { month: 'long' });
-
-    if (!acc[year]) {
-      acc[year] = {};
-    }
-    if (!acc[year][month]) {
-      acc[year][month] = [];
-    }
-
-    acc[year][month].push({
-      slug: article.slug,
-      title: article.title,
-      date: article.date instanceof Date ? article.date.toLocaleDateString('pt-BR') : article.date,
-      excerpt: article.excerpt,
-      tags: article.tags,
-      series: article.series
-    });
-
-    return acc;
-  }, {});
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8 text-purple-700 dark:text-purple-400">Biblioteca de Artigos</h1>
+    <PageTransition className="container mx-auto px-4 py-8">
+      <FadeIn>
+        <h1 className="text-4xl font-bold text-center mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400">
+          Artigos
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 text-center mb-8">
+          Explore nossos artigos sobre a jornada trans no Brasil
+        </p>
+      </FadeIn>
 
-      {/* Quick Links */}
-      <div className="mb-12">
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
-          <h2 className="text-2xl font-bold mb-4 text-purple-700 dark:text-purple-400">Navegação Rápida</h2>
-          <div className="flex flex-wrap gap-4">
-            <Link
-              href="/articles/latest"
-              className="px-4 py-2 bg-purple-100 dark:bg-purple-900 text-purple-900 dark:text-purple-100 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors"
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {articles.map((article, index) => (
+          <SlideIn 
+            key={article.slug} 
+            direction={index % 2 === 0 ? 'left' : 'right'}
+            delay={index * 0.1}
+            className="h-full"
+          >
+            <Link 
+              href={`/articles/${article.slug}`}
+              className="block h-full bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
             >
-              Artigos Recentes
-            </Link>
-            <Link
-              href="/articles/series"
-              className="px-4 py-2 bg-purple-100 dark:bg-purple-900 text-purple-900 dark:text-purple-100 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors"
-            >
-              Séries de Artigos
-            </Link>
-            <Link
-              href="/search"
-              className="px-4 py-2 bg-purple-100 dark:bg-purple-900 text-purple-900 dark:text-purple-100 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors"
-            >
-              Buscar Artigos
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Tags Navigation */}
-      <div className="mb-12">
-        <h2 className="text-2xl font-bold mb-4 text-purple-700 dark:text-purple-400">Categorias</h2>
-        <div className="flex flex-wrap gap-2">
-          {allTags.map(tag => (
-            <Link
-              key={tag}
-              href={`/search?tag=${encodeURIComponent(tag)}`}
-              className="px-3 py-1 bg-purple-100 dark:bg-gray-800 text-purple-900 dark:text-purple-300 rounded-full hover:bg-purple-200 dark:hover:bg-gray-700 transition-colors"
-            >
-              {tag}
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* Articles by Year and Month */}
-      <div className="space-y-12">
-        {Object.entries(groupedArticles)
-          .sort(([yearA], [yearB]) => Number(yearB) - Number(yearA))
-          .map(([year, months]) => (
-            <section key={year}>
-              <h2 className="text-3xl font-bold mb-6 text-purple-700 dark:text-purple-400">{year}</h2>
-              <div className="space-y-8">
-                {Object.entries(months).map(([month, monthArticles]) => (
-                  <div key={month}>
-                    <h3 className="text-xl font-bold mb-4 text-purple-600 dark:text-purple-300 capitalize">{month}</h3>
-                    <div className="space-y-4">
-                      {monthArticles.map(article => (
-                        <article key={article.slug} className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
-                          <h4 className="text-xl font-bold mb-2">
-                            <Link
-                              href={`/articles/${article.slug}`}
-                              className="text-purple-700 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
-                            >
-                              {article.title}
-                            </Link>
-                          </h4>
-                          {article.series && (
-                            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                              Parte da série: {article.series.name}
-                            </div>
-                          )}
-                          <div className="text-gray-800 dark:text-gray-300 mb-4">
-                            <RedditText text={article.excerpt} />
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            {article.tags.map(tag => (
-                              <Link
-                                key={tag}
-                                href={`/search?tag=${encodeURIComponent(tag)}`}
-                                className="text-sm px-2 py-1 bg-purple-100 dark:bg-gray-700 text-purple-900 dark:text-purple-300 rounded-full hover:bg-purple-200 dark:hover:bg-gray-600 transition-colors"
-                              >
-                                {tag}
-                              </Link>
-                            ))}
-                          </div>
-                        </article>
-                      ))}
-                    </div>
+              <article className="p-6 h-full flex flex-col">
+                <h2 className="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                  {article.title}
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400 mb-4 flex-grow">
+                  {article.excerpt}
+                </p>
+                <div className="flex items-center justify-between mt-auto">
+                  <div className="flex flex-wrap gap-2">
+                    {article.tags?.map((tag) => (
+                      <span
+                        key={tag}
+                        className="inline-block bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs px-2 py-1 rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </section>
-          ))}
+                  <time className="text-sm text-gray-500 dark:text-gray-400">
+                    {new Date(article.date).toLocaleDateString('pt-BR')}
+                  </time>
+                </div>
+              </article>
+            </Link>
+          </SlideIn>
+        ))}
       </div>
-    </div>
+    </PageTransition>
   );
-} 
+}

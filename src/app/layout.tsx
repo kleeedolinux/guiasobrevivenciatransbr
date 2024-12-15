@@ -1,68 +1,21 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
-import Link from 'next/link';
 import { ThemeProvider } from 'next-themes';
-import ThemeToggle from '@/components/ThemeToggle';
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import ThemeSwitcher from '../components/ThemeSwitcher';
+import ThemeToggle from '../components/ThemeToggle';
+import MobileMenu from '../components/MobileMenu';
+import Link from 'next/link';
 
 const inter = Inter({ subsets: ['latin'] });
 
 const navigation = [
   { name: 'Início', href: '/' },
   { name: 'Artigos', href: '/articles' },
-  { name: 'Séries', href: '/articles/series' },
-  { name: 'Recentes', href: '/articles/latest' },
+  { name: 'Séries', href: '/series' },
   { name: 'Buscar', href: '/search' },
-  { name: 'Sobre', href: '/about' },
-  { name: 'Comunidade', href: '/community' },
 ];
-
-export const metadata = {
-  metadataBase: new URL('https://guiasobrevivenciatrans.vercel.app/'),  
-  title: 'Guia de Sobrevivência Trans no Brasil',
-  description: 'Um repositório abrangente de informações para pessoas trans enfrentarem os desafios de viver no Brasil.',
-  openGraph: {
-    title: 'Guia de Sobrevivência Trans no Brasil',
-    description: 'Um repositório abrangente de informações para pessoas trans enfrentarem os desafios de viver no Brasil.',
-    images: [
-      {
-        url: '/icone.png',
-        width: 1200,
-        height: 630,
-        alt: 'Imagem representativa do Guia de Sobrevivência Trans no Brasil',
-      },
-    ]
-  },
-  twitter: {
-    card: 'summary_large_image',
-    site: 'guiasobrevivenciat',
-    creator: 'juliakle'
-  },
-  keywords: [
-    'trans', 'sobrevivência', 'direitos humanos', 'Brasil', 'guia',
-    'pessoas trans', 'discriminação', 'igualdade de direitos', 'orientação para trans',
-    'vida trans no Brasil', 'resistência trans', 'inclusão social', 'ativismo trans',
-    'direitos LGBT', 'conscientização trans', 'apoio a trans', 'recursos para trans',
-    'comunidade trans no Brasil'
-  ],
-};
-
-function ThemeSwitcher() {
-  return (
-    <script
-      dangerouslySetInnerHTML={{
-        __html: `
-          if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark')
-          } else {
-            document.documentElement.classList.remove('dark')
-          }
-        `,
-      }}
-    />
-  );
-}
 
 export default function RootLayout({
   children,
@@ -74,18 +27,21 @@ export default function RootLayout({
       <head>
         <ThemeSwitcher />
       </head>
-      <body className={`${inter.className} bg-white dark:bg-gray-900 min-h-screen`}>
+      <body className={`${inter.className} bg-gradient-to-br from-white to-purple-50 dark:from-gray-900 dark:to-purple-950 min-h-screen`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <header className="bg-white dark:bg-gray-800 shadow-lg">
+          <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/80 dark:bg-gray-800/80 shadow-lg">
             <nav className="container mx-auto px-4">
               <div className="flex items-center justify-between h-16">
                 <div className="flex-shrink-0">
-                  <Link href="/" className="text-2xl font-bold text-purple-700 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">
+                  <Link 
+                    href="/" 
+                    className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 hover:from-purple-700 hover:to-pink-700 dark:hover:from-purple-300 dark:hover:to-pink-300 transition-all"
+                  >
                     Guia de Sobrevivência Trans
                   </Link>
                 </div>
@@ -95,51 +51,92 @@ export default function RootLayout({
                       <Link
                         key={item.name}
                         href={item.href}
-                        className="text-black dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                        className="relative text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium transition-colors group"
                       >
                         {item.name}
+                        <span className="absolute inset-x-0 bottom-0 h-0.5 bg-purple-600 dark:bg-purple-400 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                       </Link>
                     ))}
                   </div>
-                  <div className="ml-4">
+                  <div className="ml-6">
                     <ThemeToggle />
                   </div>
                 </div>
-              </div>
-              {/* Mobile menu */}
-              <div className="md:hidden">
-                <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                  {navigation.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className="text-black dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                  <div className="px-3 py-2">
-                    <ThemeToggle />
-                  </div>
-                </div>
+                <MobileMenu navigation={navigation} />
               </div>
             </nav>
           </header>
-          <main className="container mx-auto px-4">{children}</main>
-          <footer className="bg-white dark:bg-gray-800 mt-12">
+
+          <main className="flex-grow">
+            {children}
+          </main>
+
+          <footer className="mt-auto bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg">
             <div className="container mx-auto px-4 py-8">
-              <div className="text-center text-black dark:text-gray-400">
-                <p> {new Date().getFullYear()} Guia de Sobrevivência Trans no Brasil. Todos os direitos reservados.</p>
-                <p className="mt-2">
-                  Este site fornece informações sobre como sobreviver ao Brasil sendo uma pessoa trans apenas para fins educacionais.
-                  Consulte profissionais de saúde para aconselhamento médico.
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                  <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-400 mb-4">
+                    Sobre o Guia
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Um recurso abrangente para ajudar pessoas trans a navegarem sua jornada no Brasil.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-400 mb-4">
+                    Links Rápidos
+                  </h3>
+                  <ul className="space-y-2">
+                    <li>
+                      <Link href="/articles/latest" className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                        Artigos Recentes
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/search" className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                        Buscar
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/about" className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                        Sobre
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-400 mb-4">
+                    Comunidade
+                  </h3>
+                  <ul className="space-y-2">
+                    <li>
+                      <Link href="/community" className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                        Participe
+                      </Link>
+                    </li>
+                    <li>
+                      <a 
+                        href="https://github.com/kleeedolinux/guiasobrevivenciatransbr" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                      >
+                        GitHub
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <p className="text-center text-gray-600 dark:text-gray-400">
+                  {new Date().getFullYear()} Guia de Sobrevivência Trans Brasil. Feito com {'💜'} pela comunidade.
                 </p>
               </div>
             </div>
           </footer>
+          <Analytics />
+          <SpeedInsights />
         </ThemeProvider>
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );
