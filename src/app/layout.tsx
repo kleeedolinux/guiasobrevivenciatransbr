@@ -18,6 +18,50 @@ const navigation = [
   { name: 'Buscar', href: '/search' },
 ];
 
+
+export const metadata = {
+  metadataBase: new URL('https://guiasobrevivenciatrans.vercel.app/'),  
+  title: 'Guia de Sobrevivência Trans no Brasil: Direitos, Recursos e Apoio',
+  description: 'Descubra informações essenciais e recursos práticos para pessoas trans superarem desafios e encontrarem apoio no Brasil. Um guia completo e atualizado.',
+  openGraph: {
+    title: 'Guia de Sobrevivência Trans no Brasil: Direitos, Recursos e Apoio',
+    description: 'Um repositório abrangente com direitos, orientações e apoio para pessoas trans no Brasil. Explore dicas, recursos e suporte para viver com dignidade e resistência.',
+    images: [
+      {
+        url: '/icone.png',
+        width: 1200,
+        height: 630,
+        alt: 'Imagem representativa do Guia de Sobrevivência Trans no Brasil',
+      },
+      {
+        url: '/banner.png',
+        width: 1920,
+        height: 1080,
+        alt: 'Banner do Guia de Sobrevivência Trans com foco em direitos e inclusão no Brasil',
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@guiasobrevivenciat',
+    creator: '@juliakle',
+  },
+  keywords: [
+    'trans', 'sobrevivência trans', 'direitos humanos no Brasil', 'pessoas trans no Brasil', 
+    'recursos para pessoas trans', 'guia trans', 'comunidade LGBT no Brasil', 'inclusão trans', 
+    'igualdade de direitos trans', 'resistência e ativismo trans', 'saúde para pessoas trans', 
+    'apoio psicológico trans', 'orientação legal para trans', 'discriminação contra pessoas trans', 
+    'dicas para pessoas trans', 'ajuda para pessoas trans no Brasil', 'políticas públicas LGBT', 
+    'movimento trans no Brasil', 'direitos civis trans', 'educação inclusiva para trans', 
+    'trabalho e empregabilidade trans', 'proteção social trans', 'autoaceitação trans', 
+    'orientação transgênero', 'direitos LGBT no Brasil', 'segurança trans no Brasil', 
+    'recursos educacionais para trans', 'ativismo e apoio LGBT', 'dignidade e inclusão trans', 
+    'vida trans no Brasil', 'direitos fundamentais trans', 'suporte a pessoas trans'
+  ],
+  robots: 'index, follow',
+  canonical: 'https://guiasobrevivenciatrans.vercel.app/',
+};
+
 export default function RootLayout({
   children,
 }: {
