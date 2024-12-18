@@ -17,6 +17,7 @@ const navigation = [
   { name: 'Artigos', href: '/articles' },
   { name: 'Sobre mim', href: '/sobre' },
   { name: 'Buscar', href: '/search' },
+  { name: 'Criar Artigo', href: '/criar' },
 ];
 
 export const metadata = {
