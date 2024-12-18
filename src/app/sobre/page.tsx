@@ -201,7 +201,7 @@ export default function SobreMim() {
             Junte-se a nós na missão de criar o maior e mais completo guia trans em português do Brasil.
           </p>
           <Link
-            href="/community"
+            href="https://discord.gg/WCbhw7MZW9"
             className="inline-block bg-white text-purple-600 px-8 py-3 rounded-full font-semibold hover:bg-purple-50 transition-colors"
           >
             Participe da Comunidade
