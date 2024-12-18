@@ -2,6 +2,7 @@ import { getAllArticles } from '../../utils/articleActions';
 import { calculateReadingTime } from '@/utils/readingTime';
 import Link from 'next/link';
 import PageTransition, { FadeIn, SlideIn } from '../../components/PageTransition';
+import { ClockIcon, CalendarIcon, TagIcon } from '@heroicons/react/24/outline';
 
 export default async function ArticlesPage() {
   const articles = await getAllArticles();
@@ -36,22 +37,25 @@ export default async function ArticlesPage() {
                 <p className="text-gray-600 dark:text-gray-400 mb-4 flex-grow">
                   {article.excerpt}
                 </p>
-                <div className="flex items-center justify-between mt-auto">
+                <div className="flex flex-col justify-between mt-auto space-y-4">
                   <div className="flex flex-wrap gap-2">
                     {article.tags?.map((tag) => (
                       <span
                         key={tag}
-                        className="inline-block bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs px-2 py-1 rounded-full"
+                        className="inline-flex items-center gap-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs px-2 py-1 rounded-full"
                       >
+                        <TagIcon className="w-3 h-3" />
                         {tag}
                       </span>
                     ))}
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                    <span className="inline-flex items-center gap-1">
+                      <ClockIcon className="w-4 h-4" />
                       {calculateReadingTime(article.content)}
                     </span>
-                    <time className="text-sm text-gray-500 dark:text-gray-400">
+                    <time className="inline-flex items-center gap-1">
+                      <CalendarIcon className="w-4 h-4" />
                       {new Date(article.date).toLocaleDateString('pt-BR')}
                     </time>
                   </div>
