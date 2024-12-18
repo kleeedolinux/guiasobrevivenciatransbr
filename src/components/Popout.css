@@ -1,83 +1,261 @@
+.popout-container {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+  pointer-events: none;
+}
+
 .popout {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    z-index: 1000;
-    width: 90%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+  position: relative;
+  pointer-events: auto;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  padding: 24px;
+  width: min(90vw, 400px);
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Custom scrollbar for webkit browsers */
+.popout::-webkit-scrollbar {
+  width: 8px;
+}
+
+.popout::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.popout::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.popout::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+.dark .popout {
+  background-color: #1f2937;
+  border-color: #374151;
 }
 
 .popout-content {
-    flex-grow: 1;
-    color: #111827;
-    font-family: 'Inter', sans-serif;
-    text-align: center;
-    margin-bottom: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 2vw, 12px);
+  text-align: center;
 }
 
-.button-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+.popout-icon {
+  font-size: clamp(20px, 5vw, 24px);
+  margin-bottom: clamp(4px, 2vw, 8px);
 }
 
-.popout button {
-    background-color: transparent;
-    color: #3b82f6;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    transition: color 0.3s;
+.popout-title {
+  font-size: clamp(16px, 4vw, 18px);
+  font-weight: 600;
+  margin: 0;
+  color: #111827;
+  line-height: 1.4;
 }
 
-.popout button:hover {
-    color: #2563eb;
+.dark .popout-title {
+  color: #f3f4f6;
+}
+
+.popout-message {
+  color: #4b5563;
+  font-size: clamp(14px, 3.5vw, 16px);
+  line-height: 1.5;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.dark .popout-message {
+  color: #9ca3af;
 }
 
 .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: transparent;
-    color: #3b82f6;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    transition: color 0.3s;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
 }
 
-.join-button {
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 18px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: background-color 0.3s;
-    margin-top: 5px;
+.close-button:hover {
+  background-color: rgba(107, 114, 128, 0.1);
+  color: #374151;
 }
 
-.join-button:hover {
-    background-color: #2563eb;
+.dark .close-button {
+  color: #9ca3af;
 }
 
-@media (max-width: 600px) {
-    .popout {
-        width: 95%;
-        max-width: none;
-        padding: 10px;
-    }
+.dark .close-button:hover {
+  background-color: rgba(156, 163, 175, 0.1);
+  color: #e5e7eb;
+}
+
+.custom-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px);
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: clamp(14px, 3.5vw, 16px);
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  margin-top: clamp(6px, 2vw, 8px);
+  width: fit-content;
+  min-width: 120px;
+}
+
+/* Type-specific styles */
+.popout-info {
+  border-left: 4px solid #3b82f6;
+}
+
+.popout-info .popout-icon {
+  color: #3b82f6;
+}
+
+.popout-success {
+  border-left: 4px solid #10b981;
+}
+
+.popout-success .popout-icon {
+  color: #10b981;
+}
+
+.popout-warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.popout-warning .popout-icon {
+  color: #f59e0b;
+}
+
+.popout-error {
+  border-left: 4px solid #ef4444;
+}
+
+.popout-error .popout-icon {
+  color: #ef4444;
+}
+
+.popout-discord {
+  border-left: 4px solid #5865f2;
+}
+
+.popout-discord .popout-icon {
+  color: #5865f2;
+}
+
+.popout-discord .custom-button {
+  background-color: #5865f2;
+  color: white;
+}
+
+.popout-discord .custom-button:hover {
+  background-color: #4752c4;
+}
+
+/* Type-specific button styles */
+.popout-info .custom-button {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.popout-info .custom-button:hover {
+  background-color: #2563eb;
+}
+
+.popout-success .custom-button {
+  background-color: #10b981;
+  color: white;
+}
+
+.popout-success .custom-button:hover {
+  background-color: #059669;
+}
+
+.popout-warning .custom-button {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.popout-warning .custom-button:hover {
+  background-color: #d97706;
+}
+
+.popout-error .custom-button {
+  background-color: #ef4444;
+  color: white;
+}
+
+.popout-error .custom-button:hover {
+  background-color: #dc2626;
+}
+
+/* Media queries for better mobile support */
+@media (max-width: 640px) {
+  .popout {
+    width: 95vw;
+    padding: 16px;
+  }
+
+  .popout-content {
+    gap: 8px;
+  }
+
+  .custom-button {
+    width: 100%;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 360px) {
+  .popout {
+    width: 98vw;
+    padding: 12px;
+  }
+
+  .popout-title {
+    font-size: 16px;
+  }
+
+  .popout-message {
+    font-size: 14px;
+  }
+
+  .custom-button {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
 }
