@@ -2,29 +2,33 @@
 
 import { useEffect, useRef } from 'react';
 
+interface Position {
+  x: number;
+  y: number;
+}
+
 const ONEKO_SIZE = 32;
 const ONEKO_SPEED = 10;
 
-// Transgender flag colors
-const TRANS_COLORS = [
-  '#5BCEFA', // Light blue
-  '#F5A9B8', // Light pink
-  '#FFFFFF', // White
-  '#F5A9B8', // Light pink
-  '#5BCEFA'  // Light blue
+const FRAMES = [
+  [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0],
+  [0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1],
 ];
+
+const TRANS_COLORS = ['#5BCEFA', '#F5A9B8', '#FFFFFF', '#F5A9B8', '#5BCEFA'];
 
 export default function TransOneko() {
   const nekoRef = useRef<HTMLDivElement>(null);
-  const frameRef = useRef<number>();
-  const positionRef = useRef({ x: 32, y: 32 });
-  const mouseRef = useRef({ x: 32, y: 32 });
-  const frameCountRef = useRef(0);
-  const idleTimeRef = useRef(0);
+  const frameRef = useRef<number>(0);
+  const positionRef = useRef<Position>({ x: 32, y: 32 });
+  const mouseRef = useRef<Position>({ x: 32, y: 32 });
+  const frameCountRef = useRef<number>(0);
+  const idleTimeRef = useRef<number>(0);
   const idleAnimationRef = useRef<string | null>(null);
-  const idleAnimationFrameRef = useRef(0);
+  const idleAnimationFrameRef = useRef<number>(0);
   const trailsRef = useRef<HTMLDivElement[]>([]);
-  const trailIndexRef = useRef(0);
+  const trailIndexRef = useRef<number>(0);
+  const animationFrameRef = useRef<number>(0);
 
   useEffect(() => {
     // Create trails
@@ -59,12 +63,12 @@ export default function TransOneko() {
       mouseRef.current = { x: e.clientX, y: e.clientY };
     };
 
-    const frame = () => {
+    const updatePosition = () => {
       if (!nekoRef.current) return;
 
-      const deltaX = mouseRef.current.x - positionRef.current.x;
-      const deltaY = mouseRef.current.y - positionRef.current.y;
-      const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+      const diffX = mouseRef.current.x - positionRef.current.x;
+      const diffY = mouseRef.current.y - positionRef.current.y;
+      const distance = Math.sqrt(diffX * diffX + diffY * diffY);
 
       if (distance < ONEKO_SPEED) {
         idleTimeRef.current += 1;
@@ -92,8 +96,8 @@ export default function TransOneko() {
         idleTimeRef.current = 0;
 
         if (distance > ONEKO_SPEED) {
-          positionRef.current.x += (deltaX / distance) * ONEKO_SPEED;
-          positionRef.current.y += (deltaY / distance) * ONEKO_SPEED;
+          positionRef.current.x += (diffX / distance) * ONEKO_SPEED;
+          positionRef.current.y += (diffY / distance) * ONEKO_SPEED;
         } else {
           positionRef.current.x = mouseRef.current.x;
           positionRef.current.y = mouseRef.current.y;
@@ -101,7 +105,7 @@ export default function TransOneko() {
 
         updateTrails(positionRef.current.x, positionRef.current.y);
 
-        const angle = Math.atan2(deltaY, deltaX);
+        const angle = Math.atan2(diffY, diffX);
         const direction = Math.round((angle + Math.PI) / (2 * Math.PI) * 8 + 8) % 8;
 
         const spriteX = (direction % 4) * ONEKO_SIZE;
@@ -117,15 +121,34 @@ export default function TransOneko() {
         nekoRef.current.style.backgroundPosition = `-${spriteX}px -${spriteY}px`;
       }
 
-      frameRef.current = requestAnimationFrame(frame);
+      // Update trail positions
+      for (let i = trailsRef.current.length - 1; i >= 0; i--) {
+        const trail = trailsRef.current[i];
+        if (trail) {
+          const prevTrail = trailsRef.current[i - 1];
+          const targetX = prevTrail ? parseFloat(prevTrail.style.left) : positionRef.current.x;
+          const targetY = prevTrail ? parseFloat(prevTrail.style.top) : positionRef.current.y;
+          
+          const currentX = parseFloat(trail.style.left) || targetX;
+          const currentY = parseFloat(trail.style.top) || targetY;
+          
+          const newX = currentX + (targetX - currentX) * 0.3;
+          const newY = currentY + (targetY - currentY) * 0.3;
+          
+          trail.style.left = `${newX}px`;
+          trail.style.top = `${newY}px`;
+        }
+      }
+
+      animationFrameRef.current = requestAnimationFrame(updatePosition);
     };
 
     document.addEventListener('mousemove', onMouseMove);
-    frameRef.current = requestAnimationFrame(frame);
+    animationFrameRef.current = requestAnimationFrame(updatePosition);
 
     return () => {
-      if (frameRef.current) {
-        cancelAnimationFrame(frameRef.current);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
       document.removeEventListener('mousemove', onMouseMove);
       trailsRef.current.forEach(trail => {
@@ -142,7 +165,7 @@ export default function TransOneko() {
         height: ONEKO_SIZE,
         position: 'fixed',
         pointerEvents: 'none',
-        backgroundImage: 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAABACAYAAADS1n9/AAADdUlEQVR4nO2bO27UQBSGPe/wKkCUQEFBQYmQKJMGiYYCUQANDR0VEgUFEhUFBQ0SNRI0kRAlFRINDR0NDQ0FDRJSAA0FBRI8JECKxA4jzc3/RDd2GNsz9pyd8X/SyOsdz/E5/4z/OTOWlFJqwBhxZewLGDUGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOH8BZv7D4cJ0DguAAAAAElFTkSuQmCC")',
+        backgroundImage: 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAABACAYAAADS1n9/AAADdUlEQVR4nO2bO27UQBSGPe/wKkCUQEFBQYmQKJMGiYYCUQANDR0VEgUFEhUFBQ0SNRI0kRAlFRINDR0NDQ0FDRJSAA0FBRI8JECKxA4jzc3/RDd2GNsz9pyd8X/SyOsdz/E5/4z/OTOWlFJqwBhxZewLGDUGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOEYAIZjABiOAWA4BoDhGACGYwAYjgFgOAaA4RgAhmMAGI4BYDgGgOH8BZv7D4cJ0DguAAAAAElFTkSuQmCC")',
         imageRendering: 'pixelated',
         transform: 'scale(2)',
         zIndex: 10000,
